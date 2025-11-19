@@ -40,14 +40,18 @@ Route::controller(ProfileController::class)->group(function () {
 
 Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('admin.dashboard');
+    Route::controller(\App\Http\Controllers\SettingController::class)->group(function () {
+        Route::get('/settings', 'index')->name('admin.settings.index');
+        Route::delete('/settings/reset-user', 'resetUser')->name('admin.settings.reset-user');
+    });
 
     Route::prefix('manage')->group(function () {
         Route::prefix('class')->controller(ClassController::class)->group(function () {
-            Route::get('/',  'manageClass')->name('admin.manage.class');
-            Route::post('/add',  'addClass')->name('admin.manage.class.add');
-            Route::post('/import',  'importClass')->name('admin.manage.class.import');
-            Route::post('/{id}/update',  'updateClass')->name('admin.manage.class.update');
-            Route::delete('/{slug}/delete',  'deleteClass')->name('admin.manage.class.delete');
+            Route::get('/', 'manageClass')->name('admin.manage.class');
+            Route::post('/add', 'addClass')->name('admin.manage.class.add');
+            Route::post('/import', 'importClass')->name('admin.manage.class.import');
+            Route::post('/{id}/update', 'updateClass')->name('admin.manage.class.update');
+            Route::delete('/{slug}/delete', 'deleteClass')->name('admin.manage.class.delete');
 
             Route::get('/data', 'data')->name('admin.class.data');
             Route::get('/{id}/data', 'dataById')->name('admin.class.data.id');

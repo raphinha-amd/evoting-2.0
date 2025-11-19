@@ -1,5 +1,5 @@
 @extends('layouts.copyright')
-@section('title', 'Copyright')
+@section('title', 'Hak Cipta')
 
 @push('css')
     {{-- Custom CSS for This Page --}}

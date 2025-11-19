@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Manage Pemilu')
+@section('title', 'Kelola Pemilu')
 
 @push('css')
     {{-- Custom CSS for This Page --}}

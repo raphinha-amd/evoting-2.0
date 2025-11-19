@@ -25,12 +25,12 @@ class UserImport implements ToModel
 
     public function model(array $row)
     {
-        $unencryptedPassword = $row[3] ?? Str::random(8);
+        $unencryptedPassword = $row[3] ?? rand(0, 99999999);
         $password = bcrypt($unencryptedPassword);
 
         return new User([
             'fullname' => $row[1],
-            'username' => $row[2] ?? Str::random(8),
+            'username' => $row[2] ?? rand(0, 99999999),
             'password' => $password,
             'unencrypted_password' => $unencryptedPassword,
             'role' => $this->role,

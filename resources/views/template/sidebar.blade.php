@@ -13,12 +13,12 @@
         @if (auth()->user()->role == 'admin')
             <a href="{{ route('admin.dashboard') }}" class="nav-link">
                 <i class="fa-regular fa-fw fa-house"></i>
-                <span>Dashboard</span>
+                <span>Dasbor</span>
             </a>
         @else
             <a href="{{ route('user.dashboard') }}" class="nav-link">
                 <i class="fa-regular fa-fw fa-house"></i>
-                <span>Dashboard</span>
+                <span>Dasbor</span>
             </a>
         @endif
     </li>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Manage Class')
+@section('title', 'Kelola Kelas')
 
 @push('css')
     {{-- Custom CSS for This Page --}}

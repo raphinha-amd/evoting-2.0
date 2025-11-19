@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Manage Kandidat')
+@section('title', 'Kelola Kandidat')
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('vendor/DataTables/datatables.min.css') }}">

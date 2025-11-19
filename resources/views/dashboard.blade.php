@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Dasbor')
 
 @push('css')
     {{-- Custom CSS for This Page --}}
@@ -42,7 +42,7 @@
             <div class="col-12">
                 <div class="alert alert-primary collapsed" role="button" data-toggle="collapse"
                     data-target="#changelogItems" aria-expanded="false">
-                    Changelog
+                    Changelogs
                     <ul class="collapse" id="changelogItems" style="margin-left: 30px;">
                         <li>Fix Role Permission</li>
                         <li>Perbaikan Loader</li>
@@ -50,6 +50,7 @@
                         <li>Perbaikan Login</li>
                         <li>Menambah Fitur Profile</li>
                         <li>Menambah Password Pada Pemilu Yang Private</li>
+                        <li>Menambah Pengaturan Pada Role Admin</li>
                     </ul>
                 </div>
             </div>
@@ -157,7 +158,6 @@
     </script>
     <script>
         const verify = (slug) => {
-            console.log(slug)
             const verifyUrl = `{{ route('user.pemilu.verify-password.join', [':slug']) }}`
 
             $('#verifyPasswordForm').attr('action', verifyUrl.replace(':slug', slug))
@@ -165,5 +165,4 @@
             myModal.show();
         }
     </script>
-    <script src="{{ asset('../../public/js/loader.js') }}"></script>
 @endpush

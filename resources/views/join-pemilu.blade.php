@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Masuk Pemilu')
 
 @push('css')
     {{-- Custom CSS for This Page --}}
@@ -33,15 +33,17 @@
                                             </div>
                                             <div class="ml-auto pt-1">
                                                 <button onclick="visiMisi('{{ $pemilu->slug }}', '{{ $item->id }}')"
-                                                    class="btn btn-warning btn-sm">Visi & Misi</button>
+                                                        class="btn btn-warning btn-sm">Visi & Misi
+                                                </button>
                                                 <button onclick="voting('{{ $pemilu->slug }}', '{{ $item->id }}')"
-                                                    class="btn btn-primary btn-sm">Vote</button>
+                                                        class="btn btn-primary btn-sm">Vote
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body d-flex align-items-center justify-content-center">
                                         <img src="{{ asset('storage/upload/' . $item->image) }}" alt=""
-                                            class="img-fluid rounded-lg">
+                                             class="img-fluid rounded-lg">
                                     </div>
                                     <div class="card-footer">
                                         <h5 class="text-center card-text text-primary">{{ $item->name }}</h6>
@@ -55,8 +57,9 @@
         </div>
     </div>
 
-    <div class="modal fade" id="visionMissionModal" tabindex="-1" role="dialog" aria-labelledby="visionMissionModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="visionMissionModal" tabindex="-1" role="dialog"
+         aria-labelledby="visionMissionModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -67,8 +70,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <textarea class="form-control" style="cursor: no-drop" cols="30" rows="20" id="visionMissionParagraph"
-                            readonly></textarea>
+                        <textarea class="form-control" style="cursor: no-drop" cols="30" rows="20"
+                                  id="visionMissionParagraph"
+                                  readonly></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -79,7 +83,7 @@
     </div>
 
     <div class="modal fade" id="votingModal" tabindex="-1" role="dialog" aria-labelledby="votingModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

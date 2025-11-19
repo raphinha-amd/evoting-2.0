@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Manage Users')
+@section('title', 'Kelola Pengguna')
 
 @push('css')
     {{-- Custom CSS for This Page --}}
@@ -110,7 +110,7 @@
                                         id="username" placeholder="Masukkan username" required>
                                 </div>
                                 <div class="col-2">
-                                    <button onclick="$('#create-username').val(randomText(8))" type="button"
+                                    <button onclick="$('#create-username').val(randomNumber(8))" type="button"
                                         class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                                         id="password" placeholder="Masukkan password" required>
                                 </div>
                                 <div class="col-2">
-                                    <button onclick="$('#create-password').val(randomText(8))" type="button"
+                                    <button onclick="$('#create-password').val(randomNumber(8))" type="button"
                                         class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@
                                         id="username" placeholder="Masukkan username" required>
                                 </div>
                                 <div class="col-2">
-                                    <button onclick="$('#edit-username').val(randomText(8))" type="button"
+                                    <button onclick="$('#edit-username').val(randomNumber(8))" type="button"
                                         class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                                         placeholder="Masukkan password" required>
                                 </div>
                                 <div class="col-2">
-                                    <button onclick="$('#edit-password').val(randomText(8))" type="button"
+                                    <button onclick="$('#edit-password').val(randomNumber(8))" type="button"
                                         class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
@@ -508,9 +508,9 @@
         }
     </script>
     <script>
-        const randomText = (length) => {
+        const randomNumber = (length) => {
             var result = '';
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var characters = '0123456789';
             var charactersLength = characters.length;
             for (var i = 0; i < length; i++) {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
