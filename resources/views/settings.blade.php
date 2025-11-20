@@ -28,21 +28,45 @@
                 </div>
             @endif
         </div>
-        <div class="col-12 col-md-3">
-            <div class="card">
-                <div class="card-header bg-primary">
-                    <h4 class="card-title text-white">Reset Pengguna</h4>
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h4 class="card-title text-white">Reset Pengguna</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-subtitle">
+                            Fitur ini akan mereset semua data pengguna kecuali akun admin. Gunakan fitur ini dengan
+                            hati-hati karena
+                            data yang telah direset tidak dapat dikembalikan!
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('admin.settings.reset-user') }}" class="btn btn-outline-danger float-right"
+                           data-confirm-delete="true">
+                            <i class="fa-regular fa-circle-dot"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-subtitle">
-                        Fitur ini akan mereset semua data pengguna kecuali akun admin. Gunakan fitur ini dengan hati-hati karena
-                        data yang telah direset tidak dapat dikembalikan!
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <a href="{{ route('admin.settings.reset-user') }}" class="btn btn-outline-danger float-right" data-confirm-delete="true">
-                        <i class="fa-regular fa-circle-dot"></i>
-                    </a>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h4 class="card-title text-white">Reset Kelas</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-subtitle">
+                            Fitur ini akan mereset semua data kelas. Gunakan fitur ini dengan
+                            hati-hati karena
+                            data yang telah direset tidak dapat dikembalikan!
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('admin.settings.reset-class') }}" class="btn btn-outline-danger float-right"
+                           data-confirm-delete="true">
+                            <i class="fa-regular fa-circle-dot"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

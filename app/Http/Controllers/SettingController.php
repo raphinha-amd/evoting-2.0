@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,5 +25,11 @@ class SettingController extends Controller
     {
         User::where('role', '!=', 'admin')->delete();
         return redirect()->back()->with('success', 'Semua data pengguna telah direset');
+    }
+
+    public function resetClass()
+    {
+        Kelas::query()->delete();
+        return redirect()->back()->with('success', 'Semua data kelas telah direset');
     }
 }
