@@ -61,6 +61,7 @@ class UserController extends Controller
         $user->unencrypted_password = $request->password;
         $user->role = $request->role;
         $user->kelas_id = $request->kelas_id;
+        $user->is_active = true;
         $user->save();
 
         return redirect()->back()->with('success', 'User berhasil ditambahkan');
@@ -170,7 +171,7 @@ class UserController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
-        $data = User::query()->orderBy('kelas_id', 'asc');
+        $data = User::query()->orderBy('kelas_id', 'asc')->where('is_active', true);
 
         if (!empty($order)) {
             $order = $order[0];

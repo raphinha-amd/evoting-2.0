@@ -42,8 +42,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('admin.dashboard');
     Route::controller(\App\Http\Controllers\SettingController::class)->group(function () {
         Route::get('/settings', 'index')->name('admin.settings.index');
-        Route::delete('/settings/reset-user', 'resetUser')->name('admin.settings.reset-user');
-        Route::delete('/settings/reset-class', 'resetClass')->name('admin.settings.reset-class');
+        Route::delete('/settings/nonactive-user', 'nonactiveUser')->name('admin.settings.nonactive-user');
+        Route::delete('/settings/nonactive-class', 'nonactiveClass')->name('admin.settings.nonactive-class');
     });
 
     Route::prefix('manage')->group(function () {

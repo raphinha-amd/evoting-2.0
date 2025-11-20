@@ -27,6 +27,7 @@ class User extends Authenticatable
         'role',
         'kelas_id',
         'profile_picture',
+        'is_active',
     ];
 
     /**

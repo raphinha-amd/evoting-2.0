@@ -21,15 +21,19 @@ class SettingController extends Controller
         ]), ['menu_type' => 'settings']);
     }
 
-    public function resetUser()
+    public function nonactiveUser()
     {
-        User::where('role', '!=', 'admin')->delete();
-        return redirect()->back()->with('success', 'Semua data pengguna telah direset');
+        User::where('role', '!=', 'admin')->get()->each(function ($user) {;
+           $user->where('is_active', true)->update(['is_active' => false]);
+        });
+        return redirect()->back()->with('success', 'Semua data pengguna telah dinonaktifkan');
     }
 
-    public function resetClass()
+    public function nonactiveClass()
     {
-        Kelas::query()->delete();
-        return redirect()->back()->with('success', 'Semua data kelas telah direset');
+        Kelas::all()->each(function ($kelas) {
+           $kelas->where('is_active', true)->update(['is_active' => false]);
+        });
+        return redirect()->back()->with('success', 'Semua data kelas telah dinonaktifkan');
     }
 }

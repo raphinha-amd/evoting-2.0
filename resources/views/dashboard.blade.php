@@ -44,13 +44,10 @@
                     data-target="#changelogItems" aria-expanded="false">
                     Changelogs
                     <ul class="collapse" id="changelogItems" style="margin-left: 30px;">
-                        <li>Fix Role Permission</li>
-                        <li>Perbaikan Loader</li>
-                        <li>Perbaikan Fitur Submit Form</li>
-                        <li>Perbaikan Login</li>
-                        <li>Menambah Fitur Profile</li>
-                        <li>Menambah Password Pada Pemilu Yang Private</li>
                         <li>Menambah Pengaturan Pada Role Admin</li>
+                        <li>Menambah Total Peserta Pada Pemilu</li>
+                        <li>Mengubah Alur Pecatatan Data Voting</li>
+                        <li>Menghapus Fitur Vote Logs</li>
                     </ul>
                 </div>
             </div>

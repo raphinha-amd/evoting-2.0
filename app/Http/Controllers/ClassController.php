@@ -53,6 +53,7 @@ class ClassController extends Controller
         $kelas = new Kelas();
         $kelas->name = $request->name;
         $kelas->slug = $slug;
+        $kelas->is_active = true;
         $kelas->save();
 
         return redirect()->back()->with('success', 'Kelas berhasil ditambahkan');
@@ -132,7 +133,7 @@ class ClassController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
-        $data = Kelas::query();
+        $data = Kelas::query()->where('is_active', true);
 
         if (!empty($order)) {
             $order = $order[0];

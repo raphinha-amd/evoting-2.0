@@ -35,6 +35,7 @@ class UserImport implements ToModel
             'unencrypted_password' => $unencryptedPassword,
             'role' => $this->role,
             'kelas_id' => $this->kelas_id,
+            'is_active' => true,
         ]);
     }
 }

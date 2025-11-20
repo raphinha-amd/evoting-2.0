@@ -32,6 +32,7 @@ class ClassImport implements ToModel
         return new Kelas([
             'name' => $row[1],
             'slug' => $slug,
+            'is_active' => true,
         ]);
     }
 

@@ -42,7 +42,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('admin.settings.reset-user') }}" class="btn btn-outline-danger float-right"
+                        <a href="{{ route('admin.settings.nonactive-user') }}" class="btn btn-outline-danger float-right"
                            data-confirm-delete="true">
                             <i class="fa-regular fa-circle-dot"></i>
                         </a>
@@ -62,7 +62,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('admin.settings.reset-class') }}" class="btn btn-outline-danger float-right"
+                        <a href="{{ route('admin.settings.nonactive-class') }}" class="btn btn-outline-danger float-right"
                            data-confirm-delete="true">
                             <i class="fa-regular fa-circle-dot"></i>
                         </a>
