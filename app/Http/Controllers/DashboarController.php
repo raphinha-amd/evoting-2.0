@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Kandidat;
 use App\Models\Notification;
 use App\Models\Pemilu;
-use App\Models\VoteLogs;
 use App\Models\Voting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -102,17 +101,12 @@ class DashboarController extends Controller
         $voting->pemilu_id = $pemilu->id;
         $voting->kandidat_id = $kandidat->id;
         $voting->user_id = Auth::id();
+        $voting->user_fullname = Auth::user()->fullname;
+        $voting->class_name = Auth::user()->kelas ? Auth::user()->kelas->name : 'N/A';
         $voting->save();
 
         if ($voting->save()) {
             Session::remove('pemilu_' . $pemilu->slug . '_verified');
-
-            $user = Auth::user();
-            $voteLogs = new VoteLogs();
-            $voteLogs->user_id = $user->id;
-            $voteLogs->pemilu_id = $pemilu->id;
-            $voteLogs->vote_time = Carbon::now()->translatedFormat('l, d F Y | H.i');
-            $voteLogs->save();
 
             $notification = new Notification();
             $notification->user_id = Auth::id();

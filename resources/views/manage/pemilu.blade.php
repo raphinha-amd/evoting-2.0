@@ -48,6 +48,7 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th>Nama Pemilu</th>
+                                <th>Total Peserta</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -274,38 +275,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="voteLogsModal" tabindex="-1" role="dialog" aria-labelledby="voteLogsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="voteLogsModalLabel">Vote Logs</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4 class="text-primary text-center" id="voteLogsTitle">Vote Logs | </h4>
-                    <hr class="divider w-75">
-                    <div class="table-responsive">
-                        <table class="table table-bordered w-100">
-                            <thead>
-                                <th class="text-center">No</th>
-                                <th>Nama Pemilih</th>
-                                <th>Nama Pemilu</th>
-                                <th>Waktu Voting</th>
-                            </thead>
-                            <tbody id="voteLogsTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-link" type="button" data-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('js')
@@ -342,6 +311,10 @@
                         orderable: true,
                     },
                     {
+                        data: 'total_participants',
+                        orderable: true,
+                    },
+                    {
                         data: 'status',
                         orderable: false,
                         render: function(data, type, row, meta) {
@@ -363,11 +336,9 @@
                                 `<a onclick="edit('${row.slug}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
                             let resultBtn =
                                 `<button onclick="result('${row.slug}')" class="btn btn-warning mr-1"><i class="fa-regular fa-square-poll-vertical"></i></button>`
-                            let voteLogs =
-                                `<button onclick="voteLogs('${row.slug}')" class="btn btn-secondary mr-1"><i class="fa-regular fa-clock-rotate-left"></i></button>`
                             let deleteBtn =
                                 `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
-                            return `${kandidatBtn}${editBtn}${resultBtn}${voteLogs}${deleteBtn}`;
+                            return `${kandidatBtn}${editBtn}${resultBtn}${deleteBtn}`;
                         }
                     }
                 ],
@@ -435,27 +406,6 @@
                 });
 
                 const myModal = new bootstrap.Modal(document.getElementById('editPemiluModal'));
-                myModal.show();
-            })
-        }
-    </script>
-    <script>
-        const voteLogs = (slug) => {
-            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/vote-logs/data`, (data) => {
-                $('#voteLogsTitle').text(data.name)
-
-                $('#voteLogsTableBody').empty();
-
-                data.voteLogs.map((logs, i) => {
-                    $('<tr>').appendTo('#voteLogsTableBody').append(
-                        `<td class="text-center">${i + 1}</td>`,
-                        `<td>${logs.user.fullname}</td>`,
-                        `<td>${logs.pemilu.name}</td>`,
-                        `<td>${logs.vote_time}</td>`
-                    )
-                })
-
-                const myModal = new bootstrap.Modal(document.getElementById('voteLogsModal'));
                 myModal.show();
             })
         }

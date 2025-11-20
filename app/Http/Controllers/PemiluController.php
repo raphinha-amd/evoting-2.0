@@ -7,11 +7,11 @@ use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\Pemilu;
 use App\Models\User;
-use App\Models\VoteLogs;
 use App\Models\Voting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -64,6 +64,7 @@ class PemiluController extends Controller
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
         $pemilu->user_id = Auth::user()->id;
+        $pemilu->total_participants = User::where('role', '!=', 'admin')->count();
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil ditambahkan');
@@ -103,6 +104,7 @@ class PemiluController extends Controller
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
         $pemilu->user_id = Auth::user()->id;
+        $pemilu->total_participants = User::where('role', '!=', 'admin')->count();
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil diubah');
@@ -205,20 +207,18 @@ class PemiluController extends Controller
             $data[] = $item->voting_count;
         }
 
-        $totalUsers = User::where('role', '!=', 'admin')->count();
-        $votedUsers = $pemilu->voting()->distinct('user_id')->count();
-        $notVotedUsers = $totalUsers - $votedUsers;
+        $totalUser = $pemilu->total_participants;
+        $votedUsers = $pemilu->voting()->count();
+        $notVotedUsers = $totalUser - $votedUsers;
 
-        $votesPerClass = Kelas::withCount([
-            'user as votes_count' => fn($q) => $q->whereHas('voting', fn($q) => $q->where('pemilu_id', $pemilu->id))
-        ])->get()->map(fn($kelas) => [
-            'name' => $kelas->name,
-            'votes_count' => $kelas->votes_count
-        ]);
 
+        $votesPerClass = Voting::where('pemilu_id', $pemilu->id)
+            ->select('class_name', DB::raw('COUNT(*) as votes_count'))
+            ->groupBy('class_name')
+            ->get();
 
         return response()->json([
-            'total_users' => $totalUsers,
+            'total_users' => $totalUser,
             'pie_charts' => [
                 'voted' => $votedUsers,
                 'not_voted' => $notVotedUsers,
@@ -228,21 +228,6 @@ class PemiluController extends Controller
                 'data' => $data
             ],
             'votes_per_class' => $votesPerClass,
-        ]);
-    }
-
-    public function dataVoteLogs($slug)
-    {
-        $pemilu = Pemilu::where('slug', $slug)->first();
-
-        if (!$pemilu) {
-            return response()->json(['message' => 'Pemilu not found'], 404);
-        }
-
-        $logs = VoteLogs::where('pemilu_id', $pemilu->id)->with(['user:id,fullname', 'pemilu:id,name'])->get();
-        return response()->json([
-            'name' => $pemilu->name,
-            'voteLogs' => $logs
         ]);
     }
 }

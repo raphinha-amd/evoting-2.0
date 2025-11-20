@@ -80,7 +80,6 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
                 Route::get('/data', [PemiluController::class, 'data'])->name('admin.pemilu.data');
                 Route::get('/{slug}/data', [PemiluController::class, 'dataBySlug'])->name('admin.pemilu.data.slug');
                 Route::get('/{slug}/result/data', [PemiluController::class, 'dataResultVoting'])->name('admin.result.data');
-                Route::get('/{slug}/vote-logs/data', [PemiluController::class, 'dataVoteLogs'])->name('admin.vote-logs.data');
             });
 
             Route::controller(KandidatController::class)->group(function () {
