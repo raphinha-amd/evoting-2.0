@@ -44,7 +44,7 @@
                     <strong>Info Penting</strong><br>
                     Mohon maaf, data voting tahun kemarin hilang karena lupa dibackup saat reset sistem.
                     Ya begitulah… developer juga manusia 😅
-                    Terima kasih sudah memaklumi.
+                    Terima kasih sudah memaklumi. -ash
                 </div>
             </div>
 
