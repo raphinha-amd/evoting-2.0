@@ -40,8 +40,17 @@
                 </div>
             @endif
             <div class="col-12">
+                <div class="alert alert-warning border-left-warning" role="alert">
+                    <strong>Info Penting</strong><br>
+                    Mohon maaf, data voting tahun kemarin hilang karena lupa dibackup saat reset sistem.
+                    Ya begitulah… developer juga manusia 😅
+                    Terima kasih sudah memaklumi.
+                </div>
+            </div>
+
+            <div class="col-12">
                 <div class="alert alert-primary collapsed" role="button" data-toggle="collapse"
-                    data-target="#changelogItems" aria-expanded="false">
+                     data-target="#changelogItems" aria-expanded="false">
                     Changelogs
                     <ul class="collapse" id="changelogItems" style="margin-left: 30px;">
                         <li>Menambah Pengaturan Pada Role Admin</li>
@@ -63,14 +72,14 @@
                             </div>
                             <div class="ml-auto">
                                 <button class="btn btn-primary" data-toggle="collapse" data-target="#collapseBody"
-                                    aria-expanded="true" aria-controls="collapseBody" onclick="toggleIcon()">
+                                        aria-expanded="true" aria-controls="collapseBody" onclick="toggleIcon()">
                                     <i class="fa-regular fa-plus" id="icon-button"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div id="collapseBody" class="collapse" aria-labelledby="collapseVotingAktif"
-                        data-parent="#collapseVotingAktif">
+                         data-parent="#collapseVotingAktif">
                         <div class="card-body">
                             <div class="row">
                                 @foreach ($pemilu as $item)
@@ -85,11 +94,12 @@
                                             <div class="card-footer">
                                                 @if ($item->is_private)
                                                     <button onclick="verify('{{ $item->slug }}')"
-                                                        class="btn btn-primary float-right"><i
-                                                            class="fa-regular fa-door-open mr-1"></i>Masuk</button>
+                                                            class="btn btn-primary float-right"><i
+                                                            class="fa-regular fa-door-open mr-1"></i>Masuk
+                                                    </button>
                                                 @else
                                                     <a href="{{ route('user.pemilu.join', $item->slug) }}"
-                                                        class="btn btn-primary float-right"><i
+                                                       class="btn btn-primary float-right"><i
                                                             class="fa-regular fa-door-open mr-1"></i>Masuk</a>
                                                 @endif
                                             </div>
@@ -104,7 +114,7 @@
         </div>
 
         <div class="modal fade" id="verifyPasswordModal" tabindex="-1" role="dialog"
-            aria-labelledby="verifyPasswordModalLabel" aria-hidden="true">
+             aria-labelledby="verifyPasswordModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -119,7 +129,7 @@
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <input id="password" type="text" class="form-control" name="password"
-                                    placeholder="Masukkan password" required>
+                                       placeholder="Masukkan password" required>
                             </div>
                         </div>
                         <div class="modal-footer">
