@@ -64,7 +64,7 @@ class PemiluController extends Controller
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
         $pemilu->user_id = Auth::user()->id;
-        $pemilu->total_participants = User::where('role', '!=', 'admin')->count();
+        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil ditambahkan');
@@ -104,7 +104,7 @@ class PemiluController extends Controller
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
         $pemilu->user_id = Auth::user()->id;
-        $pemilu->total_participants = User::where('role', '!=', 'admin')->count();
+        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil diubah');
@@ -229,5 +229,18 @@ class PemiluController extends Controller
             ],
             'votes_per_class' => $votesPerClass,
         ]);
+    }
+
+    public function syncTotalParticipants($slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu tidak ditemukan');
+        }
+
+        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
+        $pemilu->save();
+
+        return redirect()->back()->with('success', 'Berhasil menyinkronkan total peserta pemilu');
     }
 }

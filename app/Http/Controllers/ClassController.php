@@ -112,9 +112,9 @@ class ClassController extends Controller
         return redirect()->back()->with('success', 'Data kelas berhasil diimport');
     }
 
-    public function deleteClass($slug)
+    public function deleteClass($id)
     {
-        $kelas = Kelas::where('slug', $slug)->first();
+        $kelas = Kelas::where('id', $id)->first();
 
         if (!$kelas) {
             return redirect()->back()->with('error', 'Kelas yang ingin dihapus tidak ditemukan');

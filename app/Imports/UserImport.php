@@ -9,10 +9,10 @@ use Illuminate\Support\Str;
 class UserImport implements ToModel
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
 
     protected $kelas_id;
     protected $role;
@@ -28,9 +28,15 @@ class UserImport implements ToModel
         $unencryptedPassword = $row[3] ?? rand(0, 99999999);
         $password = bcrypt($unencryptedPassword);
 
+        $username = $row[2] ?? rand(0, 99999999);
+        while (User::where('username', $username)->exists()) {
+            $randomString = Str::random(4);
+            $username = $row[2] . $randomString;
+        }
+
         return new User([
             'fullname' => $row[1],
-            'username' => $row[2] ?? rand(0, 99999999),
+            'username' => $username,
             'password' => $password,
             'unencrypted_password' => $unencryptedPassword,
             'role' => $this->role,

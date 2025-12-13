@@ -45,13 +45,13 @@
                 <div class="card-body">
                     <table class="table table-bordered w-100 nowrap" id="table-1">
                         <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Nama Pemilu</th>
-                                <th>Total Peserta</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th>Nama Pemilu</th>
+                            <th>Total Peserta</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -61,7 +61,7 @@
     </div>
 
     <div class="modal fade" id="addPemiluModal" tabindex="-1" role="dialog" aria-labelledby="addPemiluModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -70,30 +70,33 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.manage.pemilu.add') }}" method="POST" id="add-pemilu-form" class="form-with-loading">
+                <form action="{{ route('admin.manage.pemilu.add') }}" method="POST" id="add-pemilu-form"
+                      class="form-with-loading">
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
                             <label for="name">Nama Pemilu</label>
                             <input type="text" class="form-control" name="name" id="name"
-                                placeholder="Masukkan nama pemilu" required>
+                                   placeholder="Masukkan nama pemilu" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
-                            <textarea class="form-control" name="description" id="description" cols="30" rows="5" required></textarea>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="5"
+                                      required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="description">Private</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_private" id="add-radio-private-yes"
-                                    value="1" checked>
+                                <input class="form-check-input" type="radio" name="is_private"
+                                       id="add-radio-private-yes"
+                                       value="1" checked>
                                 <label class="form-check-label" for="is_private1">
                                     Ya
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="is_private" id="add-radio-private-no"
-                                    value="0">
+                                       value="0">
                                 <label class="form-check-label" for="is_private2">
                                     Tidak
                                 </label>
@@ -103,13 +106,13 @@
                             <label for="password">Password</label>
                             <span class="text-danger">*Jika Private Wajib Diisi</span>
                             <input type="text" name="password" id="password" class="form-control"
-                                placeholder="Masukan password">
+                                   placeholder="Masukan password">
                         </div>
                         <div class="form-group" id="add-pemilu-group">
                             <label for="status">Status</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="status" value="1"
-                                    id="add-status-checkbox" checked>
+                                       id="add-status-checkbox" checked>
                                 <label class="form-check-label" for="add-status-checkbox">
                                     Aktif
                                 </label>
@@ -129,7 +132,7 @@
     </div>
 
     <div class="modal fade" id="editPemiluModal" tabindex="-1" role="dialog" aria-labelledby="editPemiluModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -144,24 +147,25 @@
                         <div class="form-group">
                             <label for="name">Nama Pemilu</label>
                             <input type="text" class="form-control" name="name" id="edit-name"
-                                placeholder="Masukkan nama pemilu" required>
+                                   placeholder="Masukkan nama pemilu" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
-                            <textarea class="form-control" name="description" id="edit-description" cols="30" rows="5" required></textarea>
+                            <textarea class="form-control" name="description" id="edit-description" cols="30" rows="5"
+                                      required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="description">Private</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="is_private"
-                                    id="edit-radio-private-yes" value="1" checked>
+                                       id="edit-radio-private-yes" value="1" checked>
                                 <label class="form-check-label" for="is_private1">
                                     Ya
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="is_private"
-                                    id="edit-radio-private-no" value="0">
+                                       id="edit-radio-private-no" value="0">
                                 <label class="form-check-label" for="is_private2">
                                     Tidak
                                 </label>
@@ -171,13 +175,13 @@
                             <label for="password">Password</label>
                             <span class="text-danger">*Jika Private Wajib Diisi</span>
                             <input type="text" name="password" id="edit-password" class="form-control"
-                                placeholder="Masukan password">
+                                   placeholder="Masukan password">
                         </div>
                         <div class="form-group" id="edit-pemilu-group">
                             <label for="status">Status</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="status" value="1"
-                                    id="edit-status-checkbox" checked>
+                                       id="edit-status-checkbox" checked>
                                 <label class="form-check-label" for="status-checkbox">
                                     Aktif
                                 </label>
@@ -197,7 +201,7 @@
     </div>
 
     <div class="modal fade" id="resultVotingModal" tabindex="-1" role="dialog"
-        aria-labelledby="resultVotingModalLabel" aria-hidden="true">
+         aria-labelledby="resultVotingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -217,35 +221,36 @@
                                         </div>
                                         <div class="ml-auto">
                                             <button class="btn btn-primary" data-toggle="collapse"
-                                                data-target="#collapseBody" aria-expanded="true"
-                                                aria-controls="collapseBody" onclick="toggleIcon()">
+                                                    data-target="#collapseBody" aria-expanded="true"
+                                                    aria-controls="collapseBody" onclick="toggleIcon()">
                                                 <i class="fa-regular fa-plus" id="icon-button"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="collapseBody" class="collapse" aria-labelledby="collapseResultVoting"
-                                    data-parent="#collapseResultVoting">
+                                     data-parent="#collapseResultVoting">
                                     <div class="card-body">
                                         <div class="row d-flex align-items-center justify-content-center">
                                             <div class="col-sm-12 col-md-6">
                                                 <canvas id="statusVote" style="display: block; height: 0px; width: 0px;"
-                                                    height="0"nwidth="0" class="chartjs-render-monitor mb-3"></canvas>
+                                                        height="0" nwidth="0"
+                                                        class="chartjs-render-monitor mb-3"></canvas>
                                             </div>
                                             <div class="col-12">
                                                 <div class="table-responsive">
                                                     <table class="table table-bordered w-100">
                                                         <thead>
-                                                            <tr>
-                                                                <th class="text-center">No</th>
-                                                                <th>Kelas</th>
-                                                                <th>Jumlah Yang Vote</th>
-                                                                <th class="text-right">
-                                                                    <a href="" class="btn btn-danger"
-                                                                        id="exportResultPdf"><i
-                                                                            class="fa-regular fa-file-pdf"></i></a>
-                                                                </th>
-                                                            </tr>
+                                                        <tr>
+                                                            <th class="text-center">No</th>
+                                                            <th>Kelas</th>
+                                                            <th>Jumlah Yang Vote</th>
+                                                            <th class="text-right">
+                                                                <a href="" class="btn btn-danger"
+                                                                   id="exportResultPdf"><i
+                                                                        class="fa-regular fa-file-pdf"></i></a>
+                                                            </th>
+                                                        </tr>
                                                         </thead>
                                                         <tbody id="resultTableBody"></tbody>
                                                     </table>
@@ -263,7 +268,7 @@
                                 </div>
                                 <div class="card-body h-100 d-flex align-items-center justify-content-center">
                                     <canvas id="statistikVote" style="display: block; height: 0px; width: 0px;"
-                                        height="0"nwidth="0" class="chartjs-render-monitor"></canvas>
+                                            height="0" nwidth="0" class="chartjs-render-monitor"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -282,7 +287,7 @@
     <script src="{{ asset('vendor/DataTables/datatables.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#table-1').DataTable({
                 responsive: true,
                 processing: true,
@@ -290,7 +295,7 @@
                 scrollX: true,
                 ajax: {
                     url: "{{ route('admin.pemilu.data') }}",
-                    data: function(e) {
+                    data: function (e) {
                         return e;
                     }
                 },
@@ -298,14 +303,14 @@
                     [0, 'desc']
                 ],
                 columns: [{
-                        data: null,
-                        className: 'text-center',
-                        orderable: false,
-                        render: function(data, type, row, meta) {
-                            let pageInfo = $('#table-1').DataTable().page.info();
-                            return meta.row + 1 + pageInfo.start;
-                        }
-                    },
+                    data: null,
+                    className: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        let pageInfo = $('#table-1').DataTable().page.info();
+                        return meta.row + 1 + pageInfo.start;
+                    }
+                },
                     {
                         data: 'name',
                         orderable: true,
@@ -317,14 +322,14 @@
                     {
                         data: 'status',
                         orderable: false,
-                        render: function(data, type, row, meta) {
+                        render: function (data, type, row, meta) {
                             return data ? 'Aktif' : 'Nonaktif';
                         }
                     },
                     {
                         data: null,
                         orderable: false,
-                        render: function(data, type, row, meta) {
+                        render: function (data, type, row, meta) {
                             const deleteUrl =
                                 `{{ route('admin.manage.pemilu.delete', ':slug') }}`;
                             const kandidatUrl =
@@ -344,7 +349,7 @@
                 ],
             });
 
-            $('#add-radio-private-yes, #add-radio-private-no').on('change', function() {
+            $('#add-radio-private-yes, #add-radio-private-no').on('change', function () {
                 if ($('#add-radio-private-yes').is(':checked')) {
                     $('#add-pemilu-group').removeClass('d-none');
                 } else {
@@ -352,7 +357,7 @@
                 }
             });
 
-            $('#add-pemilu-form').on('submit', function() {
+            $('#add-pemilu-form').on('submit', function () {
                 if (!$('#add-status-checkbox').is(':checked')) {
                     $('<input>').attr({
                         type: 'hidden',
@@ -387,7 +392,7 @@
                     $('#edit-status-checkbox').prop('checked', false)
                 }
 
-                $('#edit-radio-private-yes, #edit-radio-private-no').on('change', function() {
+                $('#edit-radio-private-yes, #edit-radio-private-no').on('change', function () {
                     if ($('#edit-radio-private-yes').is(':checked')) {
                         $('#edit-pemilu-group').removeClass('d-none');
                     } else {
@@ -395,7 +400,7 @@
                     }
                 });
 
-                $('#edit-pemilu-form').on('submit', function() {
+                $('#edit-pemilu-form').on('submit', function () {
                     if (!$('#edit-status-checkbox').is(':checked')) {
                         $('<input>').attr({
                             type: 'hidden',
@@ -524,7 +529,7 @@
                 data.votes_per_class.map((kelas, i) => {
                     $('<tr>').appendTo('#resultTableBody').append(
                         `<td class="text-center">${i + 1}</td>`,
-                        `<td>${kelas.name}</td>`,
+                        `<td>${kelas.class_name}</td>`,
                         `<td colspan='2'>${kelas.votes_count}</td>`
                     )
                 })

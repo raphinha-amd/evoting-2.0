@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function manageUser(Request $request)
     {
-        $kelas = Kelas::orderBy('name', 'asc')->get();
+        $kelas = Kelas::orderBy('name', 'asc')->where('is_active', true)->get();
         $notification = Notification::latest()->limit(5)->get();
         $notificationCount = Notification::count();
 
@@ -54,10 +54,17 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all());
         }
 
+        $username = $request->username;
+        while (User::where('username', $username)->exists()) {
+            $randomString = Str::random(4);
+            $username = $request->username . $randomString;
+        }
+        $request->merge(['username' => $username]);
+
         $user = new User();
         $user->fullname = $request->fullname;
         $user->username = $request->username;
-        $user->password =  bcrypt($request->password);
+        $user->password = bcrypt($request->password);
         $user->unencrypted_password = $request->password;
         $user->role = $request->role;
         $user->kelas_id = $request->kelas_id;
@@ -93,7 +100,7 @@ class UserController extends Controller
 
         $user->fullname = $request->fullname;
         $user->username = $request->username;
-        $user->password =  bcrypt($request->password);
+        $user->password = bcrypt($request->password);
         $user->unencrypted_password = $request->password;
         $user->role = $request->role;
         $user->kelas_id = $request->kelas_id;

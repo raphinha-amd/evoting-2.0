@@ -211,12 +211,12 @@
                         data: null,
                         orderable: false,
                         render: function(data, type, row, meta) {
-                            const deleteUrl = `{{ route('admin.manage.class.delete', ':slug') }}`;
+                            const deleteUrl = `{{ route('admin.manage.class.delete', 'id') }}`;
 
                             let editBtn =
                                 `<a onclick="edit('${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
                             let deleteBtn =
-                                `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                                `<a href="${deleteUrl.replace('id', row.id)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
                             return `${editBtn}${deleteBtn}`;
                         }
                     }

@@ -29,7 +29,7 @@
             @endif
         </div>
         <div class="row">
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
                 <div class="card">
                     <div class="card-header bg-primary">
                         <h4 class="card-title text-white">Reset Pengguna</h4>
@@ -49,8 +49,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3">
-                <div class="card">
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+                <div class="card h-100">
                     <div class="card-header bg-primary">
                         <h4 class="card-title text-white">Reset Kelas</h4>
                     </div>

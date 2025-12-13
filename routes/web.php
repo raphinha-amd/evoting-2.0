@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
             Route::post('/add', 'addClass')->name('admin.manage.class.add');
             Route::post('/import', 'importClass')->name('admin.manage.class.import');
             Route::post('/{id}/update', 'updateClass')->name('admin.manage.class.update');
-            Route::delete('/{slug}/delete', 'deleteClass')->name('admin.manage.class.delete');
+            Route::delete('/{id}/delete', 'deleteClass')->name('admin.manage.class.delete');
 
             Route::get('/data', 'data')->name('admin.class.data');
             Route::get('/{id}/data', 'dataById')->name('admin.class.data.id');
@@ -81,6 +81,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
                 Route::get('/data', [PemiluController::class, 'data'])->name('admin.pemilu.data');
                 Route::get('/{slug}/data', [PemiluController::class, 'dataBySlug'])->name('admin.pemilu.data.slug');
                 Route::get('/{slug}/result/data', [PemiluController::class, 'dataResultVoting'])->name('admin.result.data');
+
+                Route::post('/{slug}/sync', 'syncTotalParticipants')->name('admin.pemilu.data.sync');
             });
 
             Route::controller(KandidatController::class)->group(function () {
