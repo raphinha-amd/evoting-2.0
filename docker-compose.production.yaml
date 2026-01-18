@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ops/production/fpm.Dockerfile
-    image: ${DOCKER_REGISTRY}/fpm:${IMAGE_VERSION}
+#    image: ${DOCKER_REGISTRY}/fpm:${IMAGE_VERSION}
     # We can override any env values here.
     # By default the .env in the project root will be loaded as the environment for all containers
     # environment:
@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: ops/production/web.Dockerfile
-    image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
+#    image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
     # Expose our application port (80) through a port on our local machine (8080)
     ports:
       - "${DOCKER_HOST:-127.0.0.1:8000}:80"
