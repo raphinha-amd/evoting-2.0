@@ -14,7 +14,7 @@ services:
     # Mount the codebase, so any code changes we make will be propagated to the running application
     volumes:
       # Here we mount in our codebase so any changes are immediately reflected into the container
-      - .:/opt/apps/evoting
+      - '.:/opt/apps/evoting'
     networks:
       - evoting
 
@@ -32,7 +32,7 @@ services:
     environment:
       FPM_HOST: "fpm:9000"
     volumes:
-      - .:/opt/apps/evoting
+      - '.:/opt/apps/evoting'
     depends_on:
       - fpm
       - mysql
