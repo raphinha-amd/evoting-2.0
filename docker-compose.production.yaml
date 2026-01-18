@@ -12,9 +12,9 @@ services:
     # environment:
     #   APP_DEBUG: "true"
     # Mount the codebase, so any code changes we make will be propagated to the running application
-#    volumes:
-#      # Here we mount in our codebase so any changes are immediately reflected into the container
-#      - '.:/opt/apps/evoting'
+    volumes:
+      # Here we mount in our codebase so any changes are immediately reflected into the container
+      - '.:/opt/apps/evoting'
     networks:
       - evoting
 
@@ -48,7 +48,7 @@ services:
       MYSQL_DATABASE: evoting
     volumes:
       - 'mysql:/var/lib/mysql'
-#      - '.:/opt/apps/evoting'
+      - '.:/opt/apps/evoting'
     networks:
       - evoting
     command: --max_connections=500 --innodb_buffer_pool_size=8096M --innodb_log_file_size=256M
