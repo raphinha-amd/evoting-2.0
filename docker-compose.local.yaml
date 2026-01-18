@@ -1,0 +1,59 @@
+services:
+  mysql:
+    restart: always
+    container_name: evoting.mysql.local
+    image: mysql:8.2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: evoting
+    volumes:
+      - 'mysql:/var/lib/mysql'
+      - '.:/opt/apps/evoting'
+    networks:
+      - evoting
+    healthcheck:
+      test: [
+        "CMD",
+        "mysqladmin",
+        "ping",
+        "-p${DB_PASSWORD}"
+      ]
+      retries: 3
+      timeout: 5s
+
+  redis:
+    restart: always
+    container_name: evoting.redis.local
+    image: redis:6.0
+    networks:
+      - evoting
+    volumes:
+      - 'redis:/data'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  web:
+    restart: always
+    container_name: evoting.web.local
+    build:
+      context: .
+      dockerfile: ops/local/web.Dockerfile
+    image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
+    ports:
+      - "${DOCKER_HOST:-127.0.0.1:8000}:8000"
+    volumes:
+      - ".:/opt/apps/evoting"
+    depends_on:
+      - mysql
+    networks:
+      - evoting
+networks:
+  evoting:
+    name: evoting.local
+    driver: bridge
+
+volumes:
+  mysql:
+    name: evoting.mysql.local
+  redis:
+    name: evoting.redis.local

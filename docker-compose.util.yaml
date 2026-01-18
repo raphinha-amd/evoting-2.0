@@ -1,0 +1,17 @@
+services:
+  phpmyadmin:
+    restart: always
+    container_name: ${DOCKER_NAME:-evoting}.phpmyadmin
+    image: phpmyadmin/phpmyadmin:5.2.2
+    environment:
+      PMA_HOST: mysql
+      PMA_DB: evoting
+      PMA_USER: root
+      PMA_PASSWORD: root
+      PMA_PORT: 3306
+    links:
+      - mysql
+    ports:
+      - "127.0.0.1:8081:80"
+    networks:
+      - evoting
