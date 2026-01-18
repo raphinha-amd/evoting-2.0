@@ -14,4 +14,4 @@ WORKDIR /opt/apps/evoting
 # We want to install all the NPM packages,
 # and compile the MIX bundle for production
 RUN npm install && \
-    npm run dev
+    npm run build
