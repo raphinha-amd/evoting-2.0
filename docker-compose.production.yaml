@@ -28,7 +28,7 @@ services:
     image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
     # Expose our application port (80) through a port on our local machine (8080)
     ports:
-      - "${DOCKER_HOST:-127.0.0.1:8000}:80"
+      - "${DOCKER_HOST:-127.0.0.1:8080}:80"
     environment:
       FPM_HOST: "fpm:9000"
     volumes:
