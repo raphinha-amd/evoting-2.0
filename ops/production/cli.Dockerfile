@@ -1,7 +1,7 @@
 ARG IMAGE_VERSION=production
 
-FROM evoting/composer:local AS composer_base
-FROM evoting/frontend:local AS frontend
+FROM evoting/composer:production AS composer_base
+FROM evoting/frontend:production AS frontend
 
 FROM php:8.4-cli-alpine
 
