@@ -4,7 +4,7 @@ FROM evoting/composer:${IMAGE_VERSION} AS composer_base
 FROM evoting/frontend:${IMAGE_VERSION} AS frontend
 
 # We need a stage which contains FPM to actually run and process requests to our PHP application.
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # We need to declare that we want to use the args in this build step
 ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo pdo_mysql gd pcntl zip"
