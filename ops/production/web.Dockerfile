@@ -10,7 +10,7 @@ WORKDIR /opt/apps/evoting
 
 # We need to add our NGINX template to the container for startup,
 # and configuration.
-COPY ops/docker/production/nginx/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY ops/production/nginx/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy in ONLY the public directory of our project.
 # This is where all the static assets will live, which nginx will serve for us.
