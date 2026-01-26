@@ -9,6 +9,7 @@ use App\Models\Pemilu;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Str;
@@ -75,7 +76,7 @@ class KandidatController extends Controller
         return redirect()->back()->with('success', 'Kandidat berhasil ditambahkan');
     }
 
-    public function updateKandidatPemilu(Request $request,  $slug, $id)
+    public function updateKandidatPemilu(Request $request, $slug, $id)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
 
@@ -137,26 +138,36 @@ class KandidatController extends Controller
         $pemilu = Pemilu::where('slug', $slug)->first();
 
         if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+            return redirect()->back()->with('error', 'Pemilu tidak ditemukan');
         }
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
 
-        if (!$kandidat) {
-            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
+        if ($kandidat->isEmpty()) {
+            return redirect()->back()->with('error', 'Kandidat tidak ditemukan');
         }
 
-        $votedUsers = $pemilu->voting()->distinct('user_id')->count();
-        $votesPerClass = Kelas::withCount([
-            'user as votes_count' => fn($q) => $q->whereHas('voting', fn($q) => $q->where('pemilu_id', $pemilu->id))
-        ])->get();
+        $votedUsers = DB::table('votings')
+            ->where('pemilu_id', $pemilu->id)
+            ->distinct('user_id')
+            ->count('user_id');
 
-        $pdf = Pdf::loadView('export.export-result', compact([
+        $votesPerClass = DB::table('votings')
+            ->select('class_name', DB::raw('COUNT(DISTINCT user_id) as votes_count'))
+            ->where('pemilu_id', $pemilu->id)
+            ->groupBy('class_name')
+            ->orderBy('class_name')
+            ->get();
+
+        $pdf = Pdf::loadView('export.export-result', compact(
             'kandidat',
             'votedUsers',
             'votesPerClass'
-        ]));
-        return $pdf->download('Hasil ' . $pemilu->name . '.pdf');
+        ));
+
+        $filename = 'hasil-' . Str::slug($pemilu->name) . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function data(Request $request, $slug)

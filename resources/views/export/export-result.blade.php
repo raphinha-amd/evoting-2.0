@@ -4,58 +4,61 @@
 @section('table')
     <table>
         <thead>
-            <tr>
-                <th style="text-align: center">No</th>
-                <th>Nama Kandidat</th>
-                <th style="text-align: center">Total Pemilih</th>
-            </tr>
+        <tr>
+            <th style="text-align: center">No</th>
+            <th>Nama Kandidat</th>
+            <th style="text-align: center">Total Pemilih</th>
+        </tr>
         </thead>
         <tbody>
-            @if ($kandidat->isEmpty())
+        @if ($kandidat->isEmpty())
+            <tr>
+                <td colspan="3" style="text-align: center;">Kandidat Tidak Tersedia</td>
+            </tr>
+        @else
+            @foreach ($kandidat as $item)
                 <tr>
-                    <td colspan="3" style="text-align: center;">Kandidat Tidak Tersedia</td>
+                    <td style="text-align: center">{{ $loop->iteration }}</td>
+                    <td>{{ $item->name }}</td>
+                    <td style="text-align: center">
+                        {{ $item->voting()->where('pemilu_id', $item->pemilu_id)->count() }}
+                    </td>
                 </tr>
-            @else
-                @foreach ($kandidat as $item)
-                    <tr>
-                        <td style="text-align: center">{{ $loop->iteration }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td style="text-align: center">{{ $item->voting()->count() }}</td>
-                    </tr>
-                @endforeach
-                <tr>
-                    <td colspan="3"></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Jumlah Pemilih</td>
-                    <td style="text-align: center">{{ $votedUsers }}</td>
-                </tr>
-            @endif
+            @endforeach
+
+            <tr>
+                <td colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Jumlah Pemilih</strong></td>
+                <td style="text-align: center"><strong>{{ $votedUsers }}</strong></td>
+            </tr>
+        @endif
         </tbody>
     </table>
 
     <table style="margin-top: 2rem">
         <thead>
-            <tr>
-                <th style="text-align: center">No</th>
-                <th>Nama Kelas</th>
-                <th style="text-align: center">Jumlah Yang Vote</th>
-            </tr>
+        <tr>
+            <th style="text-align: center">No</th>
+            <th>Nama Kelas</th>
+            <th style="text-align: center">Jumlah Yang Vote</th>
+        </tr>
         </thead>
         <tbody>
-            @if ($votesPerClass->isEmpty())
+        @if ($votesPerClass->isEmpty())
             <tr>
                 <td colspan="3" style="text-align: center">Data Voting Belum Tersedia</td>
             </tr>
-            @else
-                @foreach ($votesPerClass as $item)
-                    <tr>
-                        <td style="text-align: center">{{ $loop->iteration }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td style="text-align: center">{{ $item->votes_count }}</td>
-                    </tr>
-                @endforeach
-            @endif
+        @else
+            @foreach ($votesPerClass as $item)
+                <tr>
+                    <td style="text-align: center">{{ $loop->iteration }}</td>
+                    <td>{{ $item->class_name }}</td>
+                    <td style="text-align: center">{{ $item->votes_count }}</td>
+                </tr>
+            @endforeach
+        @endif
         </tbody>
     </table>
 @endsection
