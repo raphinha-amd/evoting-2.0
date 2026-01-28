@@ -28,6 +28,12 @@
                 </div>
             @endif
         </div>
+
+        <div class="col-12">
+            <div class="alert alert-danger border-left-danger fw-semibold" role="alert">
+                ⚠️ Jangan golput! Satu suara kamu sangat berarti untuk menentukan masa depan SMEA bersama.
+            </div>
+        </div>
     </div>
 
     @if (auth()->user()->role == 'admin')

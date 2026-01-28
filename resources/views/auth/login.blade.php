@@ -49,7 +49,7 @@
         }
 
         @media screen and (min-width: 768px) {
-            .box-logo>img {
+            .box-logo > img {
                 width: 64%;
                 filter: drop-shadow(-5px 5px 5px #4e73df);
             }
@@ -70,7 +70,7 @@
                 margin-top: 24px
             }
 
-            .box-logo>img {
+            .box-logo > img {
                 width: 64%;
                 filter: drop-shadow();
             }
@@ -107,15 +107,17 @@
                         </h2>
                         <p>Silakan login untuk mulai memilih</p>
                     </div>
-                    <form action="{{ route('post.login', $adminLoggedIn) }}" method="POST" class="w-100 form-with-loading">
+                    <form action="{{ route('post.login', $adminLoggedIn) }}" method="POST"
+                          class="w-100 form-with-loading">
                         @csrf
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Username"
-                                name="username" required>
+                                   name="username" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password"
-                                name="password" required>
+                            <input type="password" class="form-control form-control-lg bg-light fs-6"
+                                   placeholder="Password"
+                                   name="password" required>
                         </div>
                         @if ($errors->any())
                             <div class="text-left alert alert-danger border-left-danger" role="alert">
@@ -143,7 +145,8 @@
         </div>
         <div class="info">
             <small class=" text-wrap text-center"
-                style="width: 17rem;font-family: 'Courier New', Courier, monospace; font-weight:500;">Simple E-Voting For
+                   style="width: 17rem;font-family: 'Courier New', Courier, monospace; font-weight:500;">Simple E-Voting
+                For
                 SMK Negeri 2 Sukabumi</small>
         </div>
     </div>
