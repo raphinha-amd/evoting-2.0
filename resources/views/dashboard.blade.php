@@ -28,13 +28,17 @@
                 </div>
             @endif
         </div>
+    </div>
 
-        <div class="col-12">
-            <div class="alert alert-danger border-left-danger fw-semibold" role="alert">
-                ⚠️ Jangan golput! Satu suara kamu sangat berarti untuk menentukan masa depan SMEA bersama.
+    @if(auth()->user()->role === 'user')
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger border-left-danger fw-semibold" role="alert">
+                    ⚠️ Jangan golput! Satu suara kamu sangat berarti untuk menentukan masa depan SMEA bersama.
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     @if (auth()->user()->role == 'admin')
         <div class="row">
