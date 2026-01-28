@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    @if(auth()->user()->role === 'user')
+    @if(auth()->user()->role === 'siswa')
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-danger border-left-danger fw-semibold" role="alert">
