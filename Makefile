@@ -37,14 +37,14 @@ down:
 
 shell:
 	@if [ "$(APP_ENV)" = "local" ]; then \
-		docker compose -f docker-compose.local.yaml -p ${DOCKER_NAME} exec -it app sh; \
+		docker compose -f docker-compose.local.yaml -p ${DOCKER_NAME} exec -it web sh; \
 	else \
 		docker compose -f docker-compose.production.yaml -p ${DOCKER_NAME} exec -it fpm sh; \
 	fi
 
-docker-build-app:
-	docker build --build-arg IMAGE_VERSION=${IMAGE_VERSION} -f ops/${APP_ENV}/Dockerfile -t evoting/app:${IMAGE_VERSION} .
+docker-build-web:
+	docker build --build-arg IMAGE_VERSION=${IMAGE_VERSION} -f ops/${APP_ENV}/Dockerfile -t evoting/web:${IMAGE_VERSION} .
 
-docker-push-app:
-	docker tag evoting/app:${IMAGE_VERSION} ${DOCKER_REGISTRY}/app:${IMAGE_VERSION}
-	docker push ${DOCKER_REGISTRY}/app:${IMAGE_VERSION}
+docker-push-web:
+	docker tag evoting/web:${IMAGE_VERSION} ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
+	docker push ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}

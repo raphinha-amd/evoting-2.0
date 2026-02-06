@@ -31,13 +31,13 @@ services:
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
-  app:
+  web:
     restart: always
-    container_name: evoting.app.local
+    container_name: evoting.web.local
     build:
       context: .
       dockerfile: ops/local/Dockerfile
-    image: ${DOCKER_REGISTRY}/app:${IMAGE_VERSION}
+    image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
     user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "${DOCKER_HOST:-127.0.0.1:8000}:8000"
