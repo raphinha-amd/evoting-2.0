@@ -5,21 +5,25 @@ namespace App\Http\Controllers;
 use App\Imports\ClassImport;
 use App\Models\Kelas;
 use App\Models\Notification;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ClassController extends Controller
 {
     public function manageClass()
     {
-        $kelas = Kelas::orderBy('name', 'asc')->get();
+        $kelas = Kelas::with('prodi')->orderBy('name', 'asc')->get();
+        $prodis = Prodi::where('is_active', true)->orderBy('name', 'asc')->get();
         $notification = Notification::latest()->limit(5)->get();
         $notificationCount = Notification::count();
 
         confirmDelete('Hapus Kelas', 'Apakah kamu yakin ingin menghapus kelas?');
         return view('manage.class', compact([
             'kelas',
+            'prodis',
             'notification',
             'notificationCount'
         ]), ['menu_type' => 'manage-class']);
@@ -28,33 +32,28 @@ class ClassController extends Controller
     public function addClass(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required'
+            'name' => 'required|string|max:100',
+            'prodi_id' => 'required|exists:prodis,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        $name = $request->name;
-        $toLower = strtolower($name);
-        $parts = explode(' ', $name, 2);
-        $firstPart = $parts[0];
-        $remainingPart = $parts[1] ?? '';
-
-        if (is_numeric($firstPart)) {
-            $romanNumeral = $this->toRoman($firstPart);
-            $toLower = strtolower($romanNumeral . ' ' . $remainingPart);
-        } else {
-            $toLower = strtolower($name);
+        $slug = Str::slug($request->name);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Kelas::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
         }
 
-        $slug = str_replace(' ', '-', $toLower);
-
-        $kelas = new Kelas();
-        $kelas->name = $request->name;
-        $kelas->slug = $slug;
-        $kelas->is_active = true;
-        $kelas->save();
+        Kelas::create([
+            'name' => $request->name,
+            'slug' => $slug,
+            'prodi_id' => $request->prodi_id,
+            'is_active' => true,
+        ]);
 
         return redirect()->back()->with('success', 'Kelas berhasil ditambahkan');
     }
@@ -68,30 +67,27 @@ class ClassController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required'
+            'name' => 'required|string|max:100',
+            'prodi_id' => 'required|exists:prodis,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        $name = $request->name;
-        $toLower = strtolower($name);
-        $parts = explode(' ', $name, 2);
-        $firstPart = $parts[0];
-        $remainingPart = $parts[1] ?? '';
-
-        if (is_numeric($firstPart)) {
-            $romanNumeral = $this->toRoman($firstPart);
-            $toLower = strtolower($romanNumeral . ' ' . $remainingPart);
-        } else {
-            $toLower = strtolower($name);
+        $slug = Str::slug($request->name);
+        if ($slug !== $kelas->slug) {
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Kelas::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+            $kelas->slug = $slug;
         }
 
-        $slug = str_replace(' ', '-', $toLower);
-
         $kelas->name = $request->name;
-        $kelas->slug = $slug;
+        $kelas->prodi_id = $request->prodi_id;
         $kelas->save();
 
         return redirect()->back()->with('success', 'Kelas berhasil diubah');
@@ -100,14 +96,15 @@ class ClassController extends Controller
     public function importClass(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:csv,xlsx,xls'
+            'file' => 'required|file|mimes:csv,xlsx,xls',
+            'prodi_id' => 'required|exists:prodis,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        Excel::import(new ClassImport, $request->file('file'));
+        Excel::import(new ClassImport($request->prodi_id), $request->file('file'));
 
         return redirect()->back()->with('success', 'Data kelas berhasil diimport');
     }
@@ -133,46 +130,53 @@ class ClassController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
-        $data = Kelas::query()->where('is_active', true);
+        $query = Kelas::query()->with('prodi')->where('is_active', true);
+
+        if (!empty($search['value'])) {
+            $searchValue = $search['value'];
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'LIKE', "%{$searchValue}%")
+                  ->orWhereHas('prodi', function ($p) use ($searchValue) {
+                      $p->where('name', 'LIKE', "%{$searchValue}%");
+                  });
+            });
+        }
+
+        $countFiltered = $query->count();
 
         if (!empty($order)) {
             $order = $order[0];
             $orderBy = $order['column'];
             $orderDir = $order['dir'];
 
-            if (isset($columns[$orderBy]['data'])) {
-                $data->orderBy($columns[$orderBy]['data'], $orderDir);
+            if (isset($columns[$orderBy]['data']) && in_array($columns[$orderBy]['data'], ['name', 'slug'])) {
+                $query->orderBy($columns[$orderBy]['data'], $orderDir);
             } else {
-                $data->orderBy('name', 'asc');
+                $query->orderBy('name', 'asc');
             }
         } else {
-            $data->orderBy('name', 'asc');
+            $query->orderBy('name', 'asc');
         }
 
-        $count = $data->count();
-        $countFiltered = $count;
+        $data = $query->skip($start)->take($length)->get();
+        $totalRecords = Kelas::where('is_active', true)->count();
 
-        if (!empty($search['value'])) {
-            $data->where('name', 'LIKE', '%' . $search['value'] . '%');
-            $countFiltered = $data->count();
-        }
-
-        $data = $data->skip($start)->take($length)->get();
-
-        $response = [
+        return response()->json([
             "draw" => intval($request->input('draw', 1)),
-            "recordsTotal" => $count,
+            "recordsTotal" => $totalRecords,
             "recordsFiltered" => $countFiltered,
             "limit" => $length,
             "data" => $data
-        ];
-
-        return response()->json($response);
+        ]);
     }
 
     public function dataById($id)
     {
-        $class = Kelas::where('id', $id)->first();
+        $class = Kelas::with('prodi')->where('id', $id)->first();
+
+        if (!$class) {
+            return response()->json(['message' => 'Kelas not found'], 404);
+        }
 
         return response()->json($class);
     }

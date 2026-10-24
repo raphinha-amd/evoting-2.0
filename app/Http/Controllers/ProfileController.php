@@ -14,7 +14,7 @@ class ProfileController extends Controller
 {
     public function profile()
     {
-        $user = Auth::user();
+        $user = User::with(['kelas.prodi', 'ukms'])->find(Auth::id());
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
 
@@ -22,7 +22,7 @@ class ProfileController extends Controller
             'user',
             'notificationCount',
             'notification',
-        ]), ['menu_type' => '']);
+        ]), ['menu_type' => 'profile']);
     }
 
     public function updateProfile(Request $request)

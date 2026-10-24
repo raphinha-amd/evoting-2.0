@@ -11,10 +11,16 @@ class Kelas extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'prodi_id',
         'name',
         'slug',
         'is_active'
     ];
+
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class);
+    }
 
     public function user()
     {

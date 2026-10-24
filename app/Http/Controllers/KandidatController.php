@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kandidat;
-use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\Pemilu;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -11,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Str;
 
 class KandidatController extends Controller
@@ -24,13 +22,6 @@ class KandidatController extends Controller
 
         if (!$pemilu) {
             return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
-        }
-
-        $user = Auth::user();
-
-        if ($user->id != $pemilu->user_id) {
-            Alert::warning('Akses Terlarang', 'Anda tidak memiliki akses');
-            return redirect()->back();
         }
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
@@ -53,10 +44,10 @@ class KandidatController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'vision_mission' => 'required',
-            'image' => 'required|file|image|mimes:png,jpg,jpeg'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'vision_mission' => 'required|string',
+            'image' => 'required|file|image|mimes:png,jpg,jpeg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -91,10 +82,10 @@ class KandidatController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'vision_mission' => 'required',
-            'image' => 'nullable|file|image|mimes:png,jpg,jpeg'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'vision_mission' => 'required|string',
+            'image' => 'nullable|file|image|mimes:png,jpg,jpeg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -160,6 +151,7 @@ class KandidatController extends Controller
             ->get();
 
         $pdf = Pdf::loadView('export.export-result', compact(
+            'pemilu',
             'kandidat',
             'votedUsers',
             'votesPerClass'
@@ -180,41 +172,43 @@ class KandidatController extends Controller
 
         $pemilu = Pemilu::where('slug', $slug)->first();
 
-        $data = Kandidat::query();
+        if (!$pemilu) {
+            return response()->json(['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0]);
+        }
+
+        $query = Kandidat::with('pemilu')->where('pemilu_id', $pemilu->id);
+
+        if (!empty($search['value'])) {
+            $searchValue = $search['value'];
+            $query->where('name', 'LIKE', "%{$searchValue}%");
+        }
+
+        $countFiltered = $query->count();
 
         if (!empty($order)) {
             $order = $order[0];
             $orderBy = $order['column'];
             $orderDir = $order['dir'];
 
-            if (isset($columns[$orderBy]['data'])) {
-                $data->orderBy($columns[$orderBy]['data'], $orderDir)->where('pemilu_id', $pemilu->id)->with('pemilu');
+            if (isset($columns[$orderBy]['data']) && in_array($columns[$orderBy]['data'], ['name'])) {
+                $query->orderBy($columns[$orderBy]['data'], $orderDir);
             } else {
-                $data->orderBy('name', 'asc')->where('pemilu_id', $pemilu->id)->with('pemilu');
+                $query->orderBy('name', 'asc');
             }
         } else {
-            $data->orderBy('name', 'asc')->where('pemilu_id', $pemilu->id)->with('pemilu');
+            $query->orderBy('name', 'asc');
         }
 
-        $count = $data->count();
-        $countFiltered = $count;
+        $data = $query->skip($start)->take($length)->get();
+        $totalRecords = Kandidat::where('pemilu_id', $pemilu->id)->count();
 
-        if (!empty($search['value'])) {
-            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
-            $countFiltered = $data->count();
-        }
-
-        $data = $data->skip($start)->take($length)->get();
-
-        $response = [
+        return response()->json([
             "draw" => intval($request->input('draw', 1)),
-            "recordsTotal" => $count,
+            "recordsTotal" => $totalRecords,
             "recordsFiltered" => $countFiltered,
             "limit" => $length,
             "data" => $data
-        ];
-
-        return response()->json($response);
+        ]);
     }
 
     public function dataById($slug, $id)

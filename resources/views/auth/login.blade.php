@@ -92,7 +92,9 @@
     <div class="container d-flex justify-content-center align-items-center">
         <div class="row border rounded-5 p-3 bg-white shadow box-area">
             <div class="left-box box-logo col-md-6 flex-column">
-                <img src="{{ asset('assets/img/smkn-2.png') }}" alt="">
+                <img src="{{ asset('assets/img/e-vote-logo-1.png') }}" alt="KPUM BSI Sukabumi" style="max-height: 220px; object-fit: contain;">
+                <h5 class="mt-3 text-primary font-weight-bold text-center">KPUM UBSI</h5>
+                <small class="text-muted text-center">Bina Sarana Informatika Kampus Kota Sukabumi</small>
             </div>
 
             <div class="col-md-6 right-box">
@@ -145,9 +147,7 @@
         </div>
         <div class="info">
             <small class=" text-wrap text-center"
-                   style="width: 17rem;font-family: 'Courier New', Courier, monospace; font-weight:500;">Simple E-Voting
-                For
-                SMK Negeri 2 Sukabumi</small>
+                   style="width: 22rem;font-family: 'Courier New', Courier, monospace; font-weight:500;">E-Voting KPUM &bull; Universitas Bina Sarana Informatika Kampus Kota Sukabumi</small>
         </div>
     </div>
 @endsection

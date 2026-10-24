@@ -3,10 +3,18 @@
 namespace App\Imports;
 
 use App\Models\Kelas;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class ClassImport implements ToModel
 {
+    protected $prodi_id;
+
+    public function __construct($prodi_id = null)
+    {
+        $this->prodi_id = $prodi_id;
+    }
+
     /**
      * @param array $row
      *
@@ -14,38 +22,24 @@ class ClassImport implements ToModel
      */
     public function model(array $row)
     {
-        $name = $row[1];
-        $toLower = strtolower($name);
-        $parts = explode(' ', $name, 2);
-        $firstPart = $parts[0];
-        $remainingPart = $parts[1] ?? '';
-
-        if (is_numeric($firstPart)) {
-            $romanNumeral = $this->toRoman($firstPart);
-            $toLower = strtolower($romanNumeral . ' ' . $remainingPart);
-        } else {
-            $toLower = strtolower($name);
+        $name = trim($row[1] ?? '');
+        if (empty($name)) {
+            return null;
         }
 
-        $slug = str_replace(' ', '-', $toLower);
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Kelas::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
 
         return new Kelas([
-            'name' => $row[1],
+            'prodi_id' => $this->prodi_id,
+            'name' => $name,
             'slug' => $slug,
             'is_active' => true,
         ]);
-    }
-
-    public function toRoman($num)
-    {
-        $n = intval($num);
-        $result = '';
-        $lookup = ['M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1];
-        foreach ($lookup as $roman => $value) {
-            $matches = intval($n / $value);
-            $result .= str_repeat($roman, $matches);
-            $n = $n % $value;
-        }
-        return $result;
     }
 }

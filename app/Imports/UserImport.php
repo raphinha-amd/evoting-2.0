@@ -25,6 +25,10 @@ class UserImport implements ToModel
 
     public function model(array $row)
     {
+        if (empty($row[1])) {
+            return null;
+        }
+
         $unencryptedPassword = $row[3] ?? rand(0, 99999999);
         $password = bcrypt($unencryptedPassword);
 

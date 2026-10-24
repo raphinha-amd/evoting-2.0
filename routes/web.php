@@ -5,7 +5,10 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\DashboarController;
 use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\PemiluController;
+use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UkmController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +50,41 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
     });
 
     Route::prefix('manage')->group(function () {
+        Route::prefix('prodi')->controller(ProdiController::class)->group(function () {
+            Route::get('/', 'manageProdi')->name('admin.manage.prodi');
+            Route::post('/add', 'addProdi')->name('admin.manage.prodi.add');
+            Route::post('/{id}/update', 'updateProdi')->name('admin.manage.prodi.update');
+            Route::delete('/{id}/delete', 'deleteProdi')->name('admin.manage.prodi.delete');
+
+            Route::get('/data', 'data')->name('admin.prodi.data');
+            Route::get('/{id}/data', 'dataById')->name('admin.prodi.data.id');
+        });
+
+        Route::prefix('roles')->controller(RoleController::class)->group(function () {
+            Route::get('/', 'manageRole')->name('admin.manage.roles');
+            Route::post('/add', 'addRole')->name('admin.manage.roles.add');
+            Route::post('/{id}/update', 'updateRole')->name('admin.manage.roles.update');
+            Route::delete('/{id}/delete', 'deleteRole')->name('admin.manage.roles.delete');
+
+            Route::get('/data', 'data')->name('admin.roles.data');
+            Route::get('/{id}/data', 'dataById')->name('admin.roles.data.id');
+        });
+
+        Route::prefix('ukm')->controller(UkmController::class)->group(function () {
+            Route::get('/', 'manageUkm')->name('admin.manage.ukm');
+            Route::post('/add', 'addUkm')->name('admin.manage.ukm.add');
+            Route::post('/{id}/update', 'updateUkm')->name('admin.manage.ukm.update');
+            Route::delete('/{id}/delete', 'deleteUkm')->name('admin.manage.ukm.delete');
+
+            Route::get('/data', 'data')->name('admin.ukm.data');
+            Route::get('/{id}/data', 'dataById')->name('admin.ukm.data.id');
+
+            Route::get('/{id}/members/data', 'members')->name('admin.manage.ukm.members.data');
+            Route::post('/{id}/members/import', 'importMembers')->name('admin.manage.ukm.members.import');
+            Route::post('/{id}/members/add', 'addMemberManual')->name('admin.manage.ukm.members.add');
+            Route::delete('/{id}/members/{userId}/remove', 'removeMember')->name('admin.manage.ukm.members.remove');
+        });
+
         Route::prefix('class')->controller(ClassController::class)->group(function () {
             Route::get('/', 'manageClass')->name('admin.manage.class');
             Route::post('/add', 'addClass')->name('admin.manage.class.add');
@@ -111,68 +149,28 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function () {
 Route::get('/copyright', function () {
     $data['member'] = [
         [
-            'name' => 'Azzello Fabian Cristoper',
-            'img' => 'assets/img/member/AZZELLO.JPG',
-            'instagram' => 'https://www.instagram.com/azzello_fabian',
-            'steam' => 'https://steamcommunity.com/profiles/76561199347872767',
-            'website' => 'https://ello17.github.io',
-            'github' => 'https://github.com/Ello17'
-        ],
-        [
-            'name' => 'Bintang Akbar Ramadhan',
-            'img' => 'assets/img/member/BINTANG.JPG',
-            'instagram' => 'https://www.instagram.com/notb.13',
-            'steam' => 'https://steamcommunity.com/id/biboofication',
-            'website' => 'https://arwebs.my.id',
-            'github' => 'https://github.com/akbarr13'
-        ],
-        [
-            'name' => 'Farhan Dika Alsani',
-            'img' => 'assets/img/member/farhan.jpg',
-            'instagram' => 'https://www.instagram.com/farahanaya_',
-            'steam' => 'https://steamcommunity.com/profiles/76561199821372680',
-            'website' => 'https://uiahan.github.io/kkanva-portofolio',
-            'github' => 'https://github.com/uiahan'
+            'name' => 'Raffi Ahmad',
+            'role' => 'Ketua Divisi Teknis Penyelenggara',
+            'img' => 'assets/img/member/raffi.jpg',
+            'instagram' => 'https://www.instagram.com/_rapinha/',
+            'website' => 'https://raphinha-amd.github.io/',
+            'github' => 'https://github.com/raphinha-amd',
         ],
         [
             'name' => 'Muhamad Hilal',
+            'role' => 'Bantuan Teknis (Pengembang Sistem)',
             'img' => 'assets/img/member/hilal.jpg',
             'instagram' => 'https://www.instagram.com/md.hilallsluvyaa',
-            'steam' => 'https://steamcommunity.com/profiles/nmzr',
             'website' => 'https://naramizaru.github.io',
-            'github' => 'https://github.com/NaraMizaru'
+            'github' => 'https://github.com/NaraMizaru',
         ],
         [
-            'name' => 'Muhammad Rifaa Siraajuddin Sugandi',
-            'img' => 'assets/img/member/rifaa.jpg',
-            'instagram' => 'https://www.instagram.com/rifaa_srjdn',
-            'steam' => 'https://steamcommunity.com/profiles/76561199241184002',
-            'website' => 'https://knowrise.github.io',
-            'github' => 'https://github.com/KnowRise'
-        ],
-        [
-            'name' => 'Nadhif Musyafa Alfarel',
-            'img' => 'assets/img/member/nadhif.jpg',
-            'instagram' => 'https://www.instagram.com/nadhifmusyafa23',
-            'steam' => 'https://steamcommunity.com/profiles/76561199227190848',
-            'website' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            'github' => 'https://github.com/TreeAngel'
-        ],
-        [
-            'name' => 'Syifa Nurul Fadilah',
-            'img' => 'assets/img/member/SYIFA-NURUL.JPG',
-            'instagram' => 'https://www.instagram.com/fae.lurien',
-            'steam' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            'website' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            'github' => 'https://github.com/itsdreamy'
-        ],
-        [
-            'name' => 'Syifa Syauqi Fauzani',
-            'img' => 'assets/img/member/SYFA.JPG',
-            'instagram' => 'https://www.instagram.com/syi_syau',
-            'steam' => 'https://steamcommunity.com/profiles/76561199544464507/',
-            'website' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            'github' => 'https://github.com/zxsyau'
+            'name' => 'Farhan Dika Alsani',
+            'role' => 'Bantuan Teknis (Pengembang Sistem)',
+            'img' => 'assets/img/member/farhan.jpg',
+            'instagram' => 'https://www.instagram.com/farahanaya_',
+            'website' => 'https://uiahan.github.io/kkanva-portofolio',
+            'github' => 'https://github.com/uiahan',
         ],
     ];
 

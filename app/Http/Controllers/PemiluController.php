@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kandidat;
-use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\Pemilu;
+use App\Models\Prodi;
+use App\Models\Ukm;
 use App\Models\User;
 use App\Models\Voting;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,16 +20,17 @@ class PemiluController extends Controller
 {
     public function managePemilu()
     {
-        $user = Auth::user();
-        $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('user_id', $user->id)->get();
+        $pemilu = Pemilu::with(['prodis', 'ukm', 'user'])->orderBy('created_at', 'DESC')->get();
+        $prodis = Prodi::where('is_active', true)->orderBy('name', 'asc')->get();
+        $ukms = Ukm::where('is_active', true)->orderBy('name', 'asc')->get();
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
-
-        // $kandidat = Kandidat::where('pemilu_id', )
 
         confirmDelete('Hapus Pemilu', 'Apakah kamu yakin ingin menghapus pemilu?');
         return view('manage.pemilu', compact([
             'pemilu',
+            'prodis',
+            'ukms',
             'notification',
             'notificationCount'
         ]), ['menu_type' => 'manage-pemilu']);
@@ -38,34 +39,47 @@ class PemiluController extends Controller
     public function addPemilu(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'is_private' => 'required',
-            'password' => 'required_if:is_private,1',
-            'status' => 'required'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'is_private' => 'required|in:0,1,2',
+            'password' => 'nullable|string|max:255',
+            'status' => 'required|in:0,1',
+            'prodi_ids' => 'required_if:is_private,1|array',
+            'prodi_ids.*' => 'exists:prodis,id',
+            'ukm_id' => 'required_if:is_private,2|nullable|exists:ukms,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        $toLower = strtolower($request->name);
-        $slug = str_replace([' ', '/'], '-', $toLower);
-
-        if ($request->is_private == 0) {
-            $request->merge(['password' => null]);
+        $slug = Str::slug($request->name);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Pemilu::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
         }
+
+        $isPrivate = (int)$request->is_private;
+        $prodiIds = ($isPrivate === 1) ? ($request->prodi_ids ?? []) : [];
+        $ukmId = ($isPrivate === 2) ? $request->ukm_id : null;
 
         $pemilu = new Pemilu();
         $pemilu->name = $request->name;
         $pemilu->slug = $slug;
         $pemilu->description = $request->description;
-        $pemilu->is_private = (int)$request->is_private;
-        $pemilu->password = $request->password;
+        $pemilu->is_private = $isPrivate;
+        $pemilu->password = ($isPrivate > 0 && !empty($request->password)) ? $request->password : null;
+        $pemilu->ukm_id = $ukmId;
         $pemilu->status = (int)$request->status;
-        $pemilu->user_id = Auth::user()->id;
-        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
+        $pemilu->user_id = Auth::id();
+        $pemilu->total_participants = $this->calculateTotalParticipants($isPrivate, $prodiIds, $ukmId);
         $pemilu->save();
+
+        if ($isPrivate === 1 && !empty($prodiIds)) {
+            $pemilu->prodis()->sync($prodiIds);
+        }
 
         return redirect()->back()->with('success', 'Pemilu berhasil ditambahkan');
     }
@@ -79,33 +93,49 @@ class PemiluController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'is_private' => 'required',
-            'password' => 'required_if:is_private,1',
-            'status' => 'required'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'is_private' => 'required|in:0,1,2',
+            'password' => 'nullable|string|max:255',
+            'status' => 'required|in:0,1',
+            'prodi_ids' => 'required_if:is_private,1|array',
+            'prodi_ids.*' => 'exists:prodis,id',
+            'ukm_id' => 'required_if:is_private,2|nullable|exists:ukms,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        $toLower = strtolower($request->name);
-        $slug = str_replace([' ', '/'], '-', $toLower);
-
-        if ($request->is_private == 0) {
-            $request->merge(['password' => null]);
+        $newSlug = Str::slug($request->name);
+        if ($newSlug !== $pemilu->slug) {
+            $originalSlug = $newSlug;
+            $counter = 1;
+            while (Pemilu::where('slug', $newSlug)->where('id', '!=', $pemilu->id)->exists()) {
+                $newSlug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+            $pemilu->slug = $newSlug;
         }
 
+        $isPrivate = (int)$request->is_private;
+        $prodiIds = ($isPrivate === 1) ? ($request->prodi_ids ?? []) : [];
+        $ukmId = ($isPrivate === 2) ? $request->ukm_id : null;
+
         $pemilu->name = $request->name;
-        $pemilu->slug = $slug;
         $pemilu->description = $request->description;
-        $pemilu->is_private = (int)$request->is_private;
-        $pemilu->password = $request->password;
+        $pemilu->is_private = $isPrivate;
+        $pemilu->password = ($isPrivate > 0 && !empty($request->password)) ? $request->password : null;
+        $pemilu->ukm_id = $ukmId;
         $pemilu->status = (int)$request->status;
-        $pemilu->user_id = Auth::user()->id;
-        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
+        $pemilu->total_participants = $this->calculateTotalParticipants($isPrivate, $prodiIds, $ukmId);
         $pemilu->save();
+
+        if ($isPrivate === 1) {
+            $pemilu->prodis()->sync($prodiIds);
+        } else {
+            $pemilu->prodis()->detach();
+        }
 
         return redirect()->back()->with('success', 'Pemilu berhasil diubah');
     }
@@ -116,12 +146,6 @@ class PemiluController extends Controller
 
         if (!$pemilu) {
             return redirect()->back()->with('error', 'Pemilu yang ingin dihapus tidak ditemukan');
-        }
-
-        $user = Auth::user();
-        if ($user->id != $pemilu->user_id) {
-            Alert::warning('Akses Terlarang', 'Anda tidak memiliki akses');
-            return redirect()->back();
         }
 
         $pemilu->delete();
@@ -136,47 +160,47 @@ class PemiluController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
-        $user = Auth::user();
-        $data = Pemilu::query();
+        $query = Pemilu::query()->with(['prodis', 'ukm', 'user']);
+
+        if (!empty($search['value'])) {
+            $searchValue = $search['value'];
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'LIKE', "%{$searchValue}%")
+                  ->orWhere('description', 'LIKE', "%{$searchValue}%");
+            });
+        }
+
+        $countFiltered = $query->count();
 
         if (!empty($order)) {
             $order = $order[0];
             $orderBy = $order['column'];
             $orderDir = $order['dir'];
 
-            if (isset($columns[$orderBy]['data'])) {
-                $data->orderBy($columns[$orderBy]['data'], $orderDir);
+            if (isset($columns[$orderBy]['data']) && in_array($columns[$orderBy]['data'], ['name', 'total_participants', 'status', 'created_at'])) {
+                $query->orderBy($columns[$orderBy]['data'], $orderDir);
             } else {
-                $data->orderBy('name', 'asc')->where('user_id', $user->id);
+                $query->orderBy('created_at', 'desc');
             }
         } else {
-            $data->orderBy('name', 'asc')->where('user_id', $user->id);
+            $query->orderBy('created_at', 'desc');
         }
 
-        $count = $data->count();
-        $countFiltered = $count;
+        $data = $query->skip($start)->take($length)->get();
+        $totalRecords = Pemilu::count();
 
-        if (!empty($search['value'])) {
-            $data->where('name', 'LIKE', '%' . $search['value'] . '%');
-            $countFiltered = $data->count();
-        }
-
-        $data = $data->skip($start)->take($length)->get();
-
-        $response = [
+        return response()->json([
             "draw" => intval($request->input('draw', 1)),
-            "recordsTotal" => $count,
+            "recordsTotal" => $totalRecords,
             "recordsFiltered" => $countFiltered,
             "limit" => $length,
             "data" => $data
-        ];
-
-        return response()->json($response);
+        ]);
     }
 
     public function dataBySlug($slug)
     {
-        $pemilu = Pemilu::where('slug', $slug)->first();
+        $pemilu = Pemilu::with(['prodis', 'ukm'])->where('slug', $slug)->first();
 
         if (!$pemilu) {
             return response()->json(['message' => 'Pemilu not found'], 404);
@@ -195,10 +219,6 @@ class PemiluController extends Controller
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->withCount('voting')->get();
 
-        if ($kandidat->isEmpty()) {
-            return response()->json(['message' => 'Kandidat not found'], 404);
-        }
-
         $labels = [];
         $data = [];
 
@@ -209,8 +229,7 @@ class PemiluController extends Controller
 
         $totalUser = $pemilu->total_participants;
         $votedUsers = $pemilu->voting()->count();
-        $notVotedUsers = $totalUser - $votedUsers;
-
+        $notVotedUsers = max(0, $totalUser - $votedUsers);
 
         $votesPerClass = Voting::where('pemilu_id', $pemilu->id)
             ->select('class_name', DB::raw('COUNT(*) as votes_count'))
@@ -233,14 +252,37 @@ class PemiluController extends Controller
 
     public function syncTotalParticipants($slug)
     {
-        $pemilu = Pemilu::where('slug', $slug)->first();
+        $pemilu = Pemilu::with(['prodis', 'ukm'])->where('slug', $slug)->first();
         if (!$pemilu) {
             return redirect()->back()->with('error', 'Pemilu tidak ditemukan');
         }
 
-        $pemilu->total_participants = User::where('role', '!=', 'admin')->where('is_active', true)->count();
+        $isPrivate = (int)$pemilu->is_private;
+        $prodiIds = ($isPrivate === 1) ? $pemilu->prodis->pluck('id')->toArray() : [];
+
+        $pemilu->total_participants = $this->calculateTotalParticipants($isPrivate, $prodiIds, $pemilu->ukm_id);
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Berhasil menyinkronkan total peserta pemilu');
+    }
+
+    /**
+     * Helper to calculate total active participants dynamically based on election scope
+     */
+    protected function calculateTotalParticipants(int $isPrivate, array $prodiIds = [], ?string $ukmId = null): int
+    {
+        $query = User::where('role', '!=', 'admin')->where('is_active', true);
+
+        if ($isPrivate === 2 && !empty($ukmId)) {
+            $query->whereHas('ukms', function ($q) use ($ukmId) {
+                $q->where('ukms.id', $ukmId);
+            });
+        } elseif ($isPrivate === 1 && !empty($prodiIds)) {
+            $query->whereHas('kelas', function ($q) use ($prodiIds) {
+                $q->whereIn('prodi_id', $prodiIds);
+            });
+        }
+
+        return $query->count();
     }
 }

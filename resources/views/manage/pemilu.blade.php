@@ -30,27 +30,29 @@
             @endif
         </div>
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <div class="row align-items-center">
                         <div class="col">
-                            <h4 class="text-primary card-title">Kelola Pemilu</h4>
+                            <h4 class="text-primary font-weight-bold m-0"><i class="fa-regular fa-check-to-slot mr-2"></i>Kelola Pemilu (KPUM)</h4>
+                            <small class="text-muted">Komisi Pemilihan Umum Mahasiswa - Universitas BSI Kampus Kota Sukabumi</small>
                         </div>
-                        <div class="ml-auto">
-                            <button data-target="#addPemiluModal" data-toggle="modal" class="btn btn-success mr-1"><i
-                                    class="fa-regular fa-plus"></i></button>
+                        <div class="col-auto">
+                            <button data-target="#addPemiluModal" data-toggle="modal" class="btn btn-success"><i
+                                    class="fa-regular fa-plus mr-1"></i> Tambah Pemilu</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered w-100 nowrap" id="table-1">
-                        <thead>
+                    <table class="table table-bordered table-hover w-100 nowrap" id="table-1">
+                        <thead class="thead-light">
                         <tr>
-                            <th class="text-center">No</th>
+                            <th class="text-center" width="50">No</th>
                             <th>Nama Pemilu</th>
-                            <th>Total Peserta</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Tipe & Sasaran Prodi</th>
+                            <th class="text-center">Total Peserta</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center" width="220">Aksi</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -60,12 +62,13 @@
         </div>
     </div>
 
+    {{-- Modal Tambah Pemilu --}}
     <div class="modal fade" id="addPemiluModal" tabindex="-1" role="dialog" aria-labelledby="addPemiluModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPemiluModalLabel">Tambah Pemilu</h5>
+                    <h5 class="modal-title font-weight-bold" id="addPemiluModalLabel">Tambah Pemilu Baru</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -75,54 +78,99 @@
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="name">Nama Pemilu</label>
+                            <label for="name" class="font-weight-bold">Nama Pemilu <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="name" id="name"
-                                   placeholder="Masukkan nama pemilu" required>
+                                   placeholder="Contoh: Pemilihan Ketua BEM / Pemilihan Ketua HIMASI" required>
                         </div>
                         <div class="form-group">
-                            <label for="description">Deskripsi</label>
-                            <textarea class="form-control" name="description" id="description" cols="30" rows="5"
-                                      required></textarea>
+                            <label for="description" class="font-weight-bold">Deskripsi <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="3"
+                                      placeholder="Deskripsi singkat mengenai pemilihan ini" required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="description">Private</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_private"
-                                       id="add-radio-private-yes"
-                                       value="1" checked>
-                                <label class="form-check-label" for="is_private1">
-                                    Ya
+                            <label class="font-weight-bold d-block">Tipe Pemilihan <span class="text-danger">*</span></label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input add-radio-scope" type="radio" name="is_private" id="add-radio-private-no"
+                                       value="0" checked>
+                                <label class="custom-control-label" for="add-radio-private-no">
+                                    <strong class="text-success"><i class="fa-regular fa-globe mr-1"></i> Public</strong> (Semua Mahasiswa)
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_private" id="add-radio-private-no"
-                                       value="0">
-                                <label class="form-check-label" for="is_private2">
-                                    Tidak
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input add-radio-scope" type="radio" name="is_private" id="add-radio-private-prodi"
+                                       value="1">
+                                <label class="custom-control-label" for="add-radio-private-prodi">
+                                    <strong class="text-warning"><i class="fa-regular fa-graduation-cap mr-1"></i> Private Prodi</strong> (Khusus Prodi + Password)
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input add-radio-scope" type="radio" name="is_private" id="add-radio-private-ukm"
+                                       value="2">
+                                <label class="custom-control-label" for="add-radio-private-ukm">
+                                    <strong class="text-primary"><i class="fa-regular fa-people-group mr-1"></i> Private UKM</strong> (Khusus Anggota UKM + Password)
                                 </label>
                             </div>
                         </div>
-                        <div class="form-group" id="add-pemilu-group">
-                            <label for="password">Password</label>
-                            <span class="text-danger">*Jika Private Wajib Diisi</span>
+
+                        {{-- Bagian Khusus Private Prodi --}}
+                        <div id="add-private-prodi-container" class="border rounded p-3 bg-light mb-3 d-none">
+                            <h6 class="font-weight-bold text-primary"><i class="fa-regular fa-graduation-cap mr-1"></i> Sasaran Program Studi</h6>
+                            <div class="form-group mb-0">
+                                <label class="font-weight-bold">Pilih Program Studi yang Berhak Memilih <span class="text-danger">*</span></label>
+                                <div class="row">
+                                    @foreach ($prodis as $p)
+                                        <div class="col-md-6 mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input add-prodi-cb" name="prodi_ids[]"
+                                                       id="add-prodi-{{ $p->id }}" value="{{ $p->id }}">
+                                                <label class="custom-control-label" for="add-prodi-{{ $p->id }}">
+                                                    {{ $p->name }} <span class="badge badge-secondary">{{ $p->degree ?? '-' }}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <small class="text-muted">Hanya mahasiswa dari Program Studi yang dicentang yang dapat berpartisipasi.</small>
+                            </div>
+                        </div>
+
+                        {{-- Bagian Khusus Private UKM --}}
+                        <div id="add-private-ukm-container" class="border rounded p-3 bg-light mb-3 d-none">
+                            <h6 class="font-weight-bold text-primary"><i class="fa-regular fa-people-group mr-1"></i> Sasaran Unit Kegiatan Mahasiswa (UKM)</h6>
+                            <div class="form-group mb-0">
+                                <label for="add-ukm-id" class="font-weight-bold">Pilih UKM <span class="text-danger">*</span></label>
+                                <select name="ukm_id" id="add-ukm-id" class="form-control">
+                                    <option value="">-- Pilih Unit Kegiatan Mahasiswa --</option>
+                                    @foreach ($ukms as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name }} {{ $u->code ? '('.$u->code.')' : '' }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Hanya mahasiswa yang terdaftar sebagai anggota UKM ini yang dapat berpartisipasi.</small>
+                            </div>
+                        </div>
+
+                        {{-- Bagian Password Pemilu Private --}}
+                        <div id="add-password-container" class="form-group border rounded p-3 bg-light mb-3 d-none">
+                            <label for="password" class="font-weight-bold"><i class="fa-regular fa-key mr-1 text-warning"></i> Password Akses Pemilu <small class="text-muted font-weight-normal">(Opsional)</small></label>
                             <input type="text" name="password" id="password" class="form-control"
-                                   placeholder="Masukan password">
+                                   placeholder="Kosongkan jika tidak membutuhkan password tambahan">
+                            <small class="text-muted">Jika diisi, pemilih wajib memasukkan password ini. Jika dikosongkan, mahasiswa yang berhak dapat langsung memilih.</small>
                         </div>
-                        <div class="form-group" id="add-pemilu-group">
-                            <label for="status">Status</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="status" value="1"
+
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" name="status" value="1"
                                        id="add-status-checkbox" checked>
-                                <label class="form-check-label" for="add-status-checkbox">
-                                    Aktif
+                                <label class="custom-control-label font-weight-bold" for="add-status-checkbox">
+                                    Aktifkan Pemilu (Dapat dilihat pemilih)
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success btn-loading">
-                            <span class="btn-text">Tambah</span>
+                            <span class="btn-text">Tambah Pemilu</span>
                             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                         </button>
                     </div>
@@ -131,12 +179,13 @@
         </div>
     </div>
 
+    {{-- Modal Edit Pemilu --}}
     <div class="modal fade" id="editPemiluModal" tabindex="-1" role="dialog" aria-labelledby="editPemiluModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editPemiluModalLabel">Edit Pemilu</h5>
+                    <h5 class="modal-title font-weight-bold" id="editPemiluModalLabel">Edit Pemilu</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -145,51 +194,95 @@
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="name">Nama Pemilu</label>
+                            <label for="edit-name" class="font-weight-bold">Nama Pemilu <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="name" id="edit-name"
                                    placeholder="Masukkan nama pemilu" required>
                         </div>
                         <div class="form-group">
-                            <label for="description">Deskripsi</label>
-                            <textarea class="form-control" name="description" id="edit-description" cols="30" rows="5"
+                            <label for="edit-description" class="font-weight-bold">Deskripsi <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="description" id="edit-description" cols="30" rows="3"
                                       required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="description">Private</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_private"
-                                       id="edit-radio-private-yes" value="1" checked>
-                                <label class="form-check-label" for="is_private1">
-                                    Ya
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_private"
+                            <label class="font-weight-bold d-block">Tipe Pemilihan <span class="text-danger">*</span></label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input edit-radio-scope" type="radio" name="is_private"
                                        id="edit-radio-private-no" value="0">
-                                <label class="form-check-label" for="is_private2">
-                                    Tidak
+                                <label class="custom-control-label" for="edit-radio-private-no">
+                                    <strong class="text-success"><i class="fa-regular fa-globe mr-1"></i> Public</strong> (Semua Mahasiswa)
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input edit-radio-scope" type="radio" name="is_private"
+                                       id="edit-radio-private-prodi" value="1">
+                                <label class="custom-control-label" for="edit-radio-private-prodi">
+                                    <strong class="text-warning"><i class="fa-regular fa-graduation-cap mr-1"></i> Private Prodi</strong> (Khusus Prodi + Password)
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input edit-radio-scope" type="radio" name="is_private"
+                                       id="edit-radio-private-ukm" value="2">
+                                <label class="custom-control-label" for="edit-radio-private-ukm">
+                                    <strong class="text-primary"><i class="fa-regular fa-people-group mr-1"></i> Private UKM</strong> (Khusus Anggota UKM + Password)
                                 </label>
                             </div>
                         </div>
-                        <div class="form-group" id="edit-pemilu-group">
-                            <label for="password">Password</label>
-                            <span class="text-danger">*Jika Private Wajib Diisi</span>
-                            <input type="text" name="password" id="edit-password" class="form-control"
-                                   placeholder="Masukan password">
+
+                        {{-- Bagian Khusus Private Prodi di Edit --}}
+                        <div id="edit-private-prodi-container" class="border rounded p-3 bg-light mb-3 d-none">
+                            <h6 class="font-weight-bold text-primary"><i class="fa-regular fa-graduation-cap mr-1"></i> Sasaran Program Studi</h6>
+                            <div class="form-group mb-0">
+                                <label class="font-weight-bold">Pilih Program Studi yang Berhak Memilih <span class="text-danger">*</span></label>
+                                <div class="row">
+                                    @foreach ($prodis as $p)
+                                        <div class="col-md-6 mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input edit-prodi-checkbox" name="prodi_ids[]"
+                                                       id="edit-prodi-{{ $p->id }}" value="{{ $p->id }}">
+                                                <label class="custom-control-label" for="edit-prodi-{{ $p->id }}">
+                                                    {{ $p->name }} <span class="badge badge-secondary">{{ $p->degree ?? '-' }}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group" id="edit-pemilu-group">
-                            <label for="status">Status</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="status" value="1"
-                                       id="edit-status-checkbox" checked>
-                                <label class="form-check-label" for="status-checkbox">
-                                    Aktif
+
+                        {{-- Bagian Khusus Private UKM di Edit --}}
+                        <div id="edit-private-ukm-container" class="border rounded p-3 bg-light mb-3 d-none">
+                            <h6 class="font-weight-bold text-primary"><i class="fa-regular fa-people-group mr-1"></i> Sasaran Unit Kegiatan Mahasiswa (UKM)</h6>
+                            <div class="form-group mb-0">
+                                <label for="edit-ukm-id" class="font-weight-bold">Pilih UKM <span class="text-danger">*</span></label>
+                                <select name="ukm_id" id="edit-ukm-id" class="form-control">
+                                    <option value="">-- Pilih Unit Kegiatan Mahasiswa --</option>
+                                    @foreach ($ukms as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name }} {{ $u->code ? '('.$u->code.')' : '' }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Bagian Password Pemilu Private di Edit --}}
+                        <div id="edit-password-container" class="form-group border rounded p-3 bg-light mb-3 d-none">
+                            <label for="edit-password" class="font-weight-bold"><i class="fa-regular fa-key mr-1 text-warning"></i> Password Akses Pemilu <small class="text-muted font-weight-normal">(Opsional)</small></label>
+                            <input type="text" name="password" id="edit-password" class="form-control"
+                                   placeholder="Kosongkan jika tidak membutuhkan password tambahan">
+                            <small class="text-muted">Jika diisi, pemilih wajib memasukkan password ini. Jika dikosongkan, mahasiswa yang berhak dapat langsung memilih.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" name="status" value="1"
+                                       id="edit-status-checkbox">
+                                <label class="custom-control-label font-weight-bold" for="edit-status-checkbox">
+                                    Aktifkan Pemilu
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success btn-loading">
                             <span class="btn-text">Ubah</span>
                             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
@@ -200,82 +293,59 @@
         </div>
     </div>
 
+    {{-- Modal Hasil Voting --}}
     <div class="modal fade" id="resultVotingModal" tabindex="-1" role="dialog"
          aria-labelledby="resultVotingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="resultVotingModalLabel">Hasil Pemilu</h5>
+                    <h5 class="modal-title font-weight-bold" id="resultTitle">Detail & Statistik Voting</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header" id="collapseResultVoting">
-                                    <div class="row">
-                                        <div class="col">
-                                            <h4 class="text-primary card-title" id="resultTitle">Detail Voting</h4>
-                                        </div>
-                                        <div class="ml-auto">
-                                            <button class="btn btn-primary" data-toggle="collapse"
-                                                    data-target="#collapseBody" aria-expanded="true"
-                                                    aria-controls="collapseBody" onclick="toggleIcon()">
-                                                <i class="fa-regular fa-plus" id="icon-button"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="collapseBody" class="collapse" aria-labelledby="collapseResultVoting"
-                                     data-parent="#collapseResultVoting">
-                                    <div class="card-body">
-                                        <div class="row d-flex align-items-center justify-content-center">
-                                            <div class="col-sm-12 col-md-6">
-                                                <canvas id="statusVote" style="display: block; height: 0px; width: 0px;"
-                                                        height="0" nwidth="0"
-                                                        class="chartjs-render-monitor mb-3"></canvas>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered w-100">
-                                                        <thead>
-                                                        <tr>
-                                                            <th class="text-center">No</th>
-                                                            <th>Kelas</th>
-                                                            <th>Jumlah Yang Vote</th>
-                                                            <th class="text-right">
-                                                                <a href="" class="btn btn-danger"
-                                                                   id="exportResultPdf"><i
-                                                                        class="fa-regular fa-file-pdf"></i></a>
-                                                            </th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody id="resultTableBody"></tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="col-12 col-md-5 mb-4">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header font-weight-bold">Partisipasi Pemilih</div>
+                                <div class="card-body d-flex align-items-center justify-content-center">
+                                    <canvas id="statusVote"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 mt-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="text-primary card-title">Statistik</h4>
+                        <div class="col-12 col-md-7 mb-4">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header font-weight-bold">Perolehan Suara Kandidat</div>
+                                <div class="card-body">
+                                    <canvas id="statistikVote"></canvas>
                                 </div>
-                                <div class="card-body h-100 d-flex align-items-center justify-content-center">
-                                    <canvas id="statistikVote" style="display: block; height: 0px; width: 0px;"
-                                            height="0" nwidth="0" class="chartjs-render-monitor"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header font-weight-bold">Perolehan Suara per Kelas</div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-sm table-hover">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th class="text-center" width="50">No</th>
+                                                <th>Nama Kelas</th>
+                                                <th width="150">Jumlah Suara</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="resultTableBody"></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-link" type="button" data-dismiss="modal">Tutup</button>
+                    <a href="" id="exportResultPdf" class="btn btn-danger"><i class="fa-regular fa-file-pdf mr-1"></i> Export PDF</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
@@ -285,76 +355,147 @@
 @push('js')
     {{-- Custom JS for This Page --}}
     <script src="{{ asset('vendor/DataTables/datatables.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+    <script>
+        if (typeof Chart === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"><\/script>');
+        }
+    </script>
     <script>
         $(document).ready(function () {
             $('#table-1').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
-                scrollX: true,
                 ajax: {
                     url: "{{ route('admin.pemilu.data') }}",
-                    data: function (e) {
-                        return e;
-                    }
                 },
                 order: [
                     [0, 'desc']
                 ],
-                columns: [{
-                    data: null,
-                    className: 'text-center',
-                    orderable: false,
-                    render: function (data, type, row, meta) {
-                        let pageInfo = $('#table-1').DataTable().page.info();
-                        return meta.row + 1 + pageInfo.start;
-                    }
-                },
+                columns: [
+                    {
+                        data: null,
+                        className: 'text-center',
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            let pageInfo = $('#table-1').DataTable().page.info();
+                            return meta.row + 1 + pageInfo.start;
+                        }
+                    },
                     {
                         data: 'name',
                         orderable: true,
+                        render: function(data, type, row) {
+                            let desc = row.description ? `<small class="text-muted d-block">${row.description.substring(0, 60)}...</small>` : '';
+                            return `<strong>${data}</strong>${desc}`;
+                        }
+                    },
+                    {
+                        data: 'is_private',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (data == 1) {
+                                let prodiBadges = '';
+                                if (row.prodis && row.prodis.length > 0) {
+                                    prodiBadges = row.prodis.map(p => `<span class="badge badge-info mr-1">${p.name}</span>`).join('');
+                                } else {
+                                    prodiBadges = '<small class="text-muted">Semua Prodi</small>';
+                                }
+                                return `<span class="badge badge-warning"><i class="fa-regular fa-graduation-cap mr-1"></i>Private Prodi</span><div class="mt-1">${prodiBadges}</div>`;
+                            } else if (data == 2) {
+                                let ukmName = row.ukm ? row.ukm.name : 'UKM';
+                                return `<span class="badge badge-primary"><i class="fa-regular fa-people-group mr-1"></i>Private UKM</span><div class="mt-1"><span class="badge badge-info">${ukmName}</span></div>`;
+                            } else {
+                                return `<span class="badge badge-success"><i class="fa-regular fa-globe mr-1"></i>Public (Semua Mahasiswa)</span>`;
+                            }
+                        }
                     },
                     {
                         data: 'total_participants',
+                        className: 'text-center',
                         orderable: true,
+                        render: function (data) {
+                            return `<span class="badge badge-primary font-weight-bold">${data || 0} Mahasiswa</span>`;
+                        }
                     },
                     {
                         data: 'status',
-                        orderable: false,
-                        render: function (data, type, row, meta) {
-                            return data ? 'Aktif' : 'Nonaktif';
+                        className: 'text-center',
+                        orderable: true,
+                        render: function (data) {
+                            return data == 1 ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-secondary">Nonaktif</span>';
                         }
                     },
                     {
                         data: null,
+                        className: 'text-center',
                         orderable: false,
-                        render: function (data, type, row, meta) {
-                            const deleteUrl =
-                                `{{ route('admin.manage.pemilu.delete', ':slug') }}`;
-                            const kandidatUrl =
-                                `{{ route('admin.manage.pemilu.kandidat', ':slug') }}`
+                        render: function (data, type, row) {
+                            const deleteUrl = `{{ route('admin.manage.pemilu.delete', ':slug') }}`;
+                            const kandidatUrl = `{{ route('admin.manage.pemilu.kandidat', ':slug') }}`;
+                            const syncUrl = `{{ route('admin.pemilu.data.sync', ':slug') }}`;
 
-                            let kandidatBtn =
-                                `<a href="${kandidatUrl.replace(':slug', row.slug)}" class="btn btn-success mr-1"><i class="fa-regular fa-ranking-star"></i></a>`
-                            let editBtn =
-                                `<a onclick="edit('${row.slug}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
-                            let resultBtn =
-                                `<button onclick="result('${row.slug}')" class="btn btn-warning mr-1"><i class="fa-regular fa-square-poll-vertical"></i></button>`
-                            let deleteBtn =
-                                `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
-                            return `${kandidatBtn}${editBtn}${resultBtn}${deleteBtn}`;
+                            let kandidatBtn = `<a href="${kandidatUrl.replace(':slug', row.slug)}" class="btn btn-sm btn-info mr-1" title="Kelola Kandidat"><i class="fa-regular fa-user-tie"></i></a>`;
+                            let resultBtn = `<button onclick="result('${row.slug}')" class="btn btn-sm btn-warning mr-1" title="Lihat Hasil Voting"><i class="fa-regular fa-chart-pie"></i></button>`;
+                            let syncBtn = `<a href="${syncUrl.replace(':slug', row.slug)}" data-method="POST" class="btn btn-sm btn-secondary mr-1 btn-sync" data-slug="${row.slug}" title="Sinkron Total Peserta"><i class="fa-regular fa-sync"></i></a>`;
+                            let editBtn = `<button onclick="edit('${row.slug}')" class="btn btn-sm btn-primary mr-1" title="Edit"><i class="fa-regular fa-edit"></i></button>`;
+                            let deleteBtn = `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-sm btn-danger" data-confirm-delete="true" title="Hapus"><i class="fa-regular fa-trash"></i></a>`;
+
+                            return `${kandidatBtn}${resultBtn}${syncBtn}${editBtn}${deleteBtn}`;
                         }
                     }
                 ],
             });
 
-            $('#add-radio-private-yes, #add-radio-private-no').on('change', function () {
-                if ($('#add-radio-private-yes').is(':checked')) {
-                    $('#add-pemilu-group').removeClass('d-none');
+            // Toggle container private pemilu
+            function toggleAddContainers() {
+                let val = $('input[name="is_private"]:checked', '#add-pemilu-form').val();
+                if (val == '1') {
+                    $('#add-private-prodi-container').removeClass('d-none');
+                    $('#add-private-ukm-container').addClass('d-none');
+                    $('#add-password-container').removeClass('d-none');
+                } else if (val == '2') {
+                    $('#add-private-prodi-container').addClass('d-none');
+                    $('#add-private-ukm-container').removeClass('d-none');
+                    $('#add-password-container').removeClass('d-none');
                 } else {
-                    $('#add-pemilu-group').addClass('d-none');
+                    $('#add-private-prodi-container').addClass('d-none');
+                    $('#add-private-ukm-container').addClass('d-none');
+                    $('#add-password-container').addClass('d-none');
                 }
+            }
+
+            function toggleEditContainers() {
+                let val = $('input[name="is_private"]:checked', '#edit-pemilu-form').val();
+                if (val == '1') {
+                    $('#edit-private-prodi-container').removeClass('d-none');
+                    $('#edit-private-ukm-container').addClass('d-none');
+                    $('#edit-password-container').removeClass('d-none');
+                } else if (val == '2') {
+                    $('#edit-private-prodi-container').addClass('d-none');
+                    $('#edit-private-ukm-container').removeClass('d-none');
+                    $('#edit-password-container').removeClass('d-none');
+                } else {
+                    $('#edit-private-prodi-container').addClass('d-none');
+                    $('#edit-private-ukm-container').addClass('d-none');
+                    $('#edit-password-container').addClass('d-none');
+                }
+            }
+
+            $('.add-radio-scope').on('change', toggleAddContainers);
+            $('.edit-radio-scope').on('change', toggleEditContainers);
+
+            // Handler sinkron peserta
+            $(document).on('click', '.btn-sync', function (e) {
+                e.preventDefault();
+                let slug = $(this).data('slug');
+                let form = $('<form>', {
+                    action: `{{ url('admin/manage/pemilu') }}/${slug}/sync`,
+                    method: 'POST'
+                }).append('@csrf');
+                $('body').append(form);
+                form.submit();
             });
 
             $('#add-pemilu-form').on('submit', function () {
@@ -366,41 +507,52 @@
                     }).appendTo('#add-pemilu-form');
                 }
             });
-        })
-    </script>
-    <script>
+        });
+
         const edit = (slug) => {
-            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/data`, (data) => {
-                const updateUrl = '{{ route('admin.manage.pemilu.edit', ':slug') }}'
+            $.getJSON(`{{ url('admin/manage/pemilu') }}/${slug}/data`, (data) => {
+                const updateUrl = `{{ route('admin.manage.pemilu.edit', ':slug') }}`;
                 $('#edit-pemilu-form').attr('action', updateUrl.replace(':slug', slug));
 
-                $("#edit-name").val(data.name)
-                $("#edit-description").val(data.description)
+                $("#edit-name").val(data.name);
+                $("#edit-description").val(data.description);
+
+                $('.edit-prodi-checkbox').prop('checked', false);
+                $('#edit-ukm-id').val('');
+
+                $(`input[name="is_private"][value="${data.is_private}"]`, '#edit-pemilu-form').prop('checked', true);
 
                 if (data.is_private == 1) {
-                    $("#edit-radio-private-yes").prop("checked", true);
-                    $('#edit-pemilu-group').removeClass('d-none');
+                    $('#edit-private-prodi-container').removeClass('d-none');
+                    $('#edit-private-ukm-container').addClass('d-none');
+                    $('#edit-password-container').removeClass('d-none');
                     $("#edit-password").val(data.password);
+
+                    if (data.prodis && data.prodis.length > 0) {
+                        data.prodis.forEach(p => {
+                            $(`#edit-prodi-${p.id}`).prop('checked', true);
+                        });
+                    }
+                } else if (data.is_private == 2) {
+                    $('#edit-private-prodi-container').addClass('d-none');
+                    $('#edit-private-ukm-container').removeClass('d-none');
+                    $('#edit-password-container').removeClass('d-none');
+                    $("#edit-password").val(data.password);
+                    $('#edit-ukm-id').val(data.ukm_id || '');
                 } else {
-                    $("#edit-radio-private-no").prop("checked", true);
-                    $('#edit-pemilu-group').addClass('d-none');
+                    $('#edit-private-prodi-container').addClass('d-none');
+                    $('#edit-private-ukm-container').addClass('d-none');
+                    $('#edit-password-container').addClass('d-none');
+                    $("#edit-password").val('');
                 }
 
                 if (data.status == 1) {
-                    $('#edit-status-checkbox').prop('checked', true)
+                    $('#edit-status-checkbox').prop('checked', true);
                 } else {
-                    $('#edit-status-checkbox').prop('checked', false)
+                    $('#edit-status-checkbox').prop('checked', false);
                 }
 
-                $('#edit-radio-private-yes, #edit-radio-private-no').on('change', function () {
-                    if ($('#edit-radio-private-yes').is(':checked')) {
-                        $('#edit-pemilu-group').removeClass('d-none');
-                    } else {
-                        $('#edit-pemilu-group').addClass('d-none');
-                    }
-                });
-
-                $('#edit-pemilu-form').on('submit', function () {
+                $('#edit-pemilu-form').off('submit').on('submit', function () {
                     if (!$('#edit-status-checkbox').is(':checked')) {
                         $('<input>').attr({
                             type: 'hidden',
@@ -412,25 +564,9 @@
 
                 const myModal = new bootstrap.Modal(document.getElementById('editPemiluModal'));
                 myModal.show();
-            })
+            });
         }
-    </script>
-    <script>
-        const toggleIcon = () => {
-            const iconButton = document.getElementById('icon-button');
-            const collapseBody = document.getElementById('collapseBody');
-            const isExpanded = collapseBody.classList.contains('show');
 
-            if (isExpanded) {
-                iconButton.classList.remove('fa-minus');
-                iconButton.classList.add('fa-plus');
-            } else {
-                iconButton.classList.remove('fa-plus');
-                iconButton.classList.add('fa-minus');
-            }
-        }
-    </script>
-    <script>
         let pieChartIstance;
         let barChartIstance;
 
@@ -448,14 +584,14 @@
                         datasets: [{
                             data: [data.voted, data.not_voted],
                             backgroundColor: [
-                                '#6777ef',
-                                '#cdd3d8',
+                                '#4e73df',
+                                '#e74a3b',
                             ],
                             label: 'Status'
                         }],
                         labels: [
-                            'Voted',
-                            'No Vote',
+                            'Sudah Voting',
+                            'Belum Voting',
                         ],
                     },
                     options: {
@@ -479,14 +615,11 @@
                     data: {
                         labels: data.labels,
                         datasets: [{
-                            label: 'Count Vote',
+                            label: 'Total Suara',
                             data: data.data,
-                            borderWidth: 2,
-                            backgroundColor: '#6777ef',
-                            borderColor: '#6777ef',
-                            borderWidth: 2.5,
-                            pointBackgroundColor: '#ffffff',
-                            pointRadius: 4
+                            backgroundColor: '#4e73df',
+                            borderColor: '#2e59d9',
+                            borderWidth: 1.5,
                         }]
                     },
                     options: {
@@ -495,21 +628,9 @@
                         },
                         scales: {
                             yAxes: [{
-                                gridLines: {
-                                    drawBorder: false,
-                                    color: '#f2f2f2',
-                                },
                                 ticks: {
                                     beginAtZero: true,
-                                    stepSize: 150
-                                }
-                            }],
-                            xAxes: [{
-                                ticks: {
-                                    display: false
-                                },
-                                gridLines: {
-                                    display: false
+                                    precision: 0
                                 }
                             }]
                         },
@@ -517,22 +638,22 @@
                 });
             }
 
-            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/result/data`, (data) => {
-                const exportUrl = `{{ route('admin.manage.pemilu.export.result', ':slug') }}`
-                $('#exportResultPdf').attr('href', exportUrl.replace(':slug', slug))
+            $.getJSON(`{{ url('admin/manage/pemilu') }}/${slug}/result/data`, (data) => {
+                const exportUrl = `{{ route('admin.manage.pemilu.export.result', ':slug') }}`;
+                $('#exportResultPdf').attr('href', exportUrl.replace(':slug', slug));
 
-                $('#resultTitle').text(`Detail Voting | Total Users : ${data.total_users}`)
-                pieChart(data.pie_charts)
+                $('#resultTitle').text(`Detail Voting Pemilu | Total Peserta: ${data.total_users}`);
+                pieChart(data.pie_charts);
                 barChart(data.bar_charts);
 
                 $('#resultTableBody').empty();
-                data.votes_per_class.map((kelas, i) => {
+                data.votes_per_class.forEach((kelas, i) => {
                     $('<tr>').appendTo('#resultTableBody').append(
                         `<td class="text-center">${i + 1}</td>`,
-                        `<td>${kelas.class_name}</td>`,
-                        `<td colspan='2'>${kelas.votes_count}</td>`
-                    )
-                })
+                        `<td><strong>${kelas.class_name}</strong></td>`,
+                        `<td><span class="badge badge-primary">${kelas.votes_count} Suara</span></td>`
+                    );
+                });
 
                 const myModal = new bootstrap.Modal(document.getElementById('resultVotingModal'));
                 myModal.show();

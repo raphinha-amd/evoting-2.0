@@ -36,7 +36,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col">
-                            <h4 class="text-primary card-title">Kelola Users | Admin</h3>
+                            <h4 class="text-primary card-title">Kelola Admin / Panitia KPUM</h4>
                         </div>
                         <button data-target="#addUserModal" data-toggle="modal" class="btn btn-success mr-1"><i
                                 class="fa-regular fa-plus"></i></button>

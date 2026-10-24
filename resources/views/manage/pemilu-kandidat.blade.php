@@ -237,10 +237,11 @@
                             const deleteUrl =
                                 `{{ route('admin.manage.pemilu.kandidat.delete', [':slug', ':id']) }}`;
 
+                            let pemSlug = (row.pemilu && row.pemilu.slug) ? row.pemilu.slug : '{{ $pemilu->slug }}';
                             let editBtn =
-                                `<a onclick="edit('${row.pemilu.slug}', '${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                                `<button onclick="edit('${pemSlug}', '${row.id}')" class="btn btn-sm btn-primary mr-1" title="Edit"><i class="fa-regular fa-edit"></i></button>`;
                             let deleteBtn =
-                                `<a href="${deleteUrl.replace(':slug', row.pemilu.slug).replace(':id', row.id)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                                `<a href="${deleteUrl.replace(':slug', pemSlug).replace(':id', row.id)}" class="btn btn-sm btn-danger" data-confirm-delete="true" title="Hapus"><i class="fa-regular fa-trash"></i></a>`;
                             return `${editBtn}${deleteBtn}`;
                         }
                     }

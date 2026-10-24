@@ -37,7 +37,7 @@ services:
     build:
       context: .
       dockerfile: ops/local/Dockerfile
-    image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
+    # image: ${DOCKER_REGISTRY}/web:${IMAGE_VERSION}
     user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "${DOCKER_HOST:-127.0.0.1:8000}:8000"

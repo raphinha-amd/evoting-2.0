@@ -3,8 +3,7 @@
         <div class="col-6">
             <div class="container my-auto">
                 <div class="copyright text-left my-auto">
-                    {{--https://github.com/NaraMizaru--}}
-                    <span>Hak Cipta &copy; <a href="{{route('copyright')}}" target="_blank">RPL Produksi</a> {{ now()->year }}</span>
+                    <span>Hak Cipta &copy; {{ now()->year }} <a href="{{ route('copyright') }}" target="_blank">KPUM Universitas BSI Kampus Kota Sukabumi</a></span>
                 </div>
             </div>
         </div>

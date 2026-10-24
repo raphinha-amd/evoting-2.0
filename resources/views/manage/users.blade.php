@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Kelola Pengguna')
+@section('title', 'Kelola User')
 
 @push('css')
     {{-- Custom CSS for This Page --}}
     <link rel="stylesheet" href="{{ asset('vendor/DataTables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2-bootstrap-5-theme.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css') }}">
 @endpush
 
 @section('content')
@@ -32,64 +32,52 @@
             @endif
         </div>
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <div class="row align-items-center">
                         <div class="col">
-                            <h4 class="text-primary card-title">Kelola Users</h3>
+                            <h4 class="text-primary font-weight-bold m-0"><i class="fa-regular fa-users mr-2"></i>Kelola Pengguna (Voter)</h4>
+                            <small class="text-muted">Data Pemilih & Civitas Akademika BSI Kampus Kota Sukabumi</small>
                         </div>
-                        <button data-target="#addUserModal" data-toggle="modal" class="btn btn-success mr-1"><i
-                                class="fa-regular fa-plus"></i></button>
-                        <button data-target="#exportUserModal" data-toggle="modal" class="btn btn-danger mr-1"><i
-                                class="fa-regular fa-file-export"></i></button>
-                        <button data-target="#importUserModal" data-toggle="modal" class="btn btn-warning mr-1"><i
-                                class="fa-regular fa-file-import"></i></button>
+                        <div class="col-auto">
+                            <button data-target="#addUserModal" data-toggle="modal" class="btn btn-success mr-1"><i
+                                    class="fa-regular fa-plus mr-1"></i> Tambah User</button>
+                            <button data-target="#importUserModal" data-toggle="modal" class="btn btn-warning mr-1"><i
+                                    class="fa-regular fa-file-import mr-1"></i> Import</button>
+                            <button data-target="#exportUserModal" data-toggle="modal" class="btn btn-info mr-1"><i
+                                    class="fa-regular fa-file-export mr-1"></i> Export PDF</button>
+                            <a href="{{ route('admin.manage.users', ['admin' => true]) }}" class="btn btn-primary"><i
+                                    class="fa-regular fa-user-shield mr-1"></i> Admin KPUM</a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered w-100 nowrap" id="table-1">
-                        <thead>
+                    <table class="table table-bordered table-hover w-100 nowrap" id="table-1">
+                        <thead class="thead-light">
                             <tr>
-                                <th class="text-center">No</th>
+                                <th class="text-center" width="50">No</th>
                                 <th>Nama Lengkap</th>
-                                <th>Username</th>
+                                <th>NIM / Username</th>
                                 <th>Password</th>
-                                <th>Kelas</th>
+                                <th>Kelas & Prodi</th>
                                 <th>Role</th>
-                                <th>Action</th>
+                                <th class="text-center" width="120">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($user as $item)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->fullname }}</td>
-                                    <td>{{ $item->username }}</td>
-                                    <td>{{ $item->unencrypted_password }}</td>
-                                    <td>{{ $item->kelas->name ?? 'N/A' }}</td>
-                                    <td class="text-capitalize">{{ $item->role }}</td>
-                                    <td>
-                                        <button onclick="edit({{ $item->id }})" class="btn btn-primary"><i
-                                                class="fa-regular fa-edit"></i></button>
-                                        <a href="{{ route('admin.manage.user.delete', $item->username) }}"
-                                            class="btn btn-danger" data-confirm-delete="true"><i
-                                                class="fa-regular fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- Modal Tambah User --}}
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Tambah User</h5>
+                    <h5 class="modal-title font-weight-bold" id="addUserModalLabel">Tambah User</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -98,57 +86,59 @@
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="name">Nama Lengkap</label>
+                            <label for="fullname" class="font-weight-bold">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="fullname" id="fullname"
                                 placeholder="Masukkan nama lengkap" required>
                         </div>
                         <div class="form-group">
-                            <label for="username">Username</label>
+                            <label for="username" class="font-weight-bold">NIM / Username <span class="text-danger">*</span></label>
                             <div class="row align-items-center">
                                 <div class="col-10">
                                     <input id="create-username" type="text" class="form-control" name="username"
-                                        id="username" placeholder="Masukkan username" required>
+                                        placeholder="Masukkan NIM atau username" required>
                                 </div>
                                 <div class="col-2">
                                     <button onclick="$('#create-username').val(randomNumber(8))" type="button"
-                                        class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
+                                        class="btn btn-outline-primary" title="Generate Random"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
+                            <label for="password" class="font-weight-bold">Password <span class="text-danger">*</span></label>
                             <div class="row align-items-center">
                                 <div class="col-10">
                                     <input id="create-password" type="text" class="form-control" name="password"
-                                        id="password" placeholder="Masukkan password" required>
+                                        placeholder="Masukkan password" required>
                                 </div>
                                 <div class="col-2">
                                     <button onclick="$('#create-password').val(randomNumber(8))" type="button"
-                                        class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
+                                        class="btn btn-outline-primary" title="Generate Random"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="add-role-select" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="siswa">Siswa</option>
-                                <option value="guru">Guru</option>
-                                <option value="caraka">Caraka</option>
+                            <label for="add-role-select" class="font-weight-bold">Role <span class="text-danger">*</span></label>
+                            <select name="role" id="add-role-select" class="form-control" required style="width: 100%;">
+                                <option value="">-- Pilih Role --</option>
+                                @foreach ($roles as $r)
+                                    @if ($r->slug !== 'admin')
+                                        <option value="{{ $r->slug }}" data-has-class="{{ $r->has_class ? '1' : '0' }}">{{ $r->name }}</option>
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group d-none" id="add-user-group">
-                            <label for="kelas">Kelas</label>
-                            <select name="kelas_id" id="add-kelas-select" class="form-control">
-                                <option value="">Pilih Kelas</option>
+                            <label for="add-kelas-select" class="font-weight-bold">Kelas Akademik <span class="text-danger">*</span></label>
+                            <select name="kelas_id" id="add-kelas-select" class="form-control" style="width: 100%;">
+                                <option value="">-- Pilih Kelas --</option>
                                 @foreach ($kelas as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->prodi->name ?? '-' }})</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success btn-loading">
                             <span class="btn-text">Tambah</span>
                             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
@@ -159,12 +149,13 @@
         </div>
     </div>
 
+    {{-- Modal Edit User --}}
     <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                    <h5 class="modal-title font-weight-bold" id="editUserModalLabel">Edit User</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -173,57 +164,56 @@
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="fullname">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="fullname" id="edit-fullname"
-                                placeholder="Masukkan nama lengkap" required>
+                            <label for="edit-fullname" class="font-weight-bold">Nama Lengkap <span class="text-danger">*</span></label>
+                            <input id="edit-fullname" type="text" class="form-control" name="fullname" required>
                         </div>
                         <div class="form-group">
-                            <label for="username">Username</label>
+                            <label for="edit-username" class="font-weight-bold">NIM / Username <span class="text-danger">*</span></label>
                             <div class="row align-items-center">
                                 <div class="col-10">
-                                    <input id="edit-username" type="text" class="form-control" name="username"
-                                        id="username" placeholder="Masukkan username" required>
+                                    <input id="edit-username" type="text" class="form-control" name="username" required>
                                 </div>
                                 <div class="col-2">
                                     <button onclick="$('#edit-username').val(randomNumber(8))" type="button"
-                                        class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
+                                        class="btn btn-outline-primary" title="Generate Random"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
+                            <label for="edit-password" class="font-weight-bold">Password <span class="text-danger">*</span></label>
                             <div class="row align-items-center">
                                 <div class="col-10">
-                                    <input id="edit-password" type="text" class="form-control" name="password"
-                                        placeholder="Masukkan password" required>
+                                    <input id="edit-password" type="text" class="form-control" name="password" required>
                                 </div>
                                 <div class="col-2">
                                     <button onclick="$('#edit-password').val(randomNumber(8))" type="button"
-                                        class="btn btn-primary"><i class="fa-regular fa-shuffle"></i></button>
+                                        class="btn btn-outline-primary" title="Generate Random"><i class="fa-regular fa-shuffle"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="edit-role-select" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="siswa">Siswa</option>
-                                <option value="guru">Guru</option>
-                                <option value="caraka">Caraka</option>
+                            <label for="edit-role-select" class="font-weight-bold">Role <span class="text-danger">*</span></label>
+                            <select name="role" id="edit-role-select" class="form-control" required style="width: 100%;">
+                                <option value="">-- Pilih Role --</option>
+                                @foreach ($roles as $r)
+                                    @if ($r->slug !== 'admin')
+                                        <option value="{{ $r->slug }}" data-has-class="{{ $r->has_class ? '1' : '0' }}">{{ $r->name }}</option>
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group d-none" id="edit-user-group">
-                            <label for="kelas">Kelas</label>
-                            <select name="kelas_id" id="edit-kelas-select" class="form-control">
-                                <option value="">Pilih Kelas</option>
+                            <label for="edit-kelas-select" class="font-weight-bold">Kelas Akademik <span class="text-danger">*</span></label>
+                            <select name="kelas_id" id="edit-kelas-select" class="form-control" style="width: 100%;">
+                                <option value="">-- Pilih Kelas --</option>
                                 @foreach ($kelas as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->prodi->name ?? '-' }})</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success btn-loading">
                             <span class="btn-text">Ubah</span>
                             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
@@ -234,12 +224,13 @@
         </div>
     </div>
 
+    {{-- Modal Import User --}}
     <div class="modal fade" id="importUserModal" tabindex="-1" role="dialog" aria-labelledby="importUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="importUserModalLabel">Import Data User</h5>
+                    <h5 class="modal-title font-weight-bold" id="importUserModalLabel">Import Data User</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -249,55 +240,56 @@
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="import-role-select" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="siswa">Siswa</option>
-                                <option value="guru">Guru</option>
-                                <option value="caraka">Caraka</option>
+                            <label for="import-role-select" class="font-weight-bold">Role Pengguna <span class="text-danger">*</span></label>
+                            <select name="role" id="import-role-select" class="form-control" required style="width: 100%;">
+                                <option value="">-- Pilih Role --</option>
+                                @foreach ($roles as $r)
+                                    @if ($r->slug !== 'admin')
+                                        <option value="{{ $r->slug }}" data-has-class="{{ $r->has_class ? '1' : '0' }}">{{ $r->name }}</option>
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group d-none" id="import-user-group">
-                            <label for="kelas">Kelas</label>
-                            <select name="kelas_id" id="import-kelas-select" class="form-control">
-                                <option value="">Pilih Kelas</option>
+                            <label for="import-kelas-select" class="font-weight-bold">Kelas Akademik <span class="text-danger">*</span></label>
+                            <select name="kelas_id" id="import-kelas-select" class="form-control" style="width: 100%;">
+                                <option value="">-- Pilih Kelas --</option>
                                 @foreach ($kelas as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->prodi->name ?? '-' }})</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="file">File CSV | Excel</label>
-                            <input type="file" name="file" id="file" class="form-control" required>
+                            <label for="file" class="font-weight-bold">File CSV / Excel <span class="text-danger">*</span></label>
+                            <input type="file" name="file" id="file" class="form-control" accept=".csv, .xlsx, .xls" required>
                         </div>
-                        <div class="form-group align-items-center">
-                            <label for="table">Contoh Table</label>
-                            <span class="text-danger">*Tidak di beri header</span>
-                            <a href="{{ asset('assets/example-import/Data User (Contoh).xlsx') }}"
-                                class="btn btn-danger float-right mb-2"><i class="fa-regular fa-download"></i></a>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Contoh Format Excel</label>
+                            <span class="text-danger small d-block mb-1">*Tanpa header baris</span>
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-sm small">
+                                    <thead>
+                                        <tr class="bg-light">
+                                            <th width="40">Kolom 1</th>
+                                            <th>Kolom 2 (Nama)</th>
+                                            <th>Kolom 3 (NIM/User)</th>
+                                            <th>Kolom 4 (Password)</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="text-center">1</td>
-                                            <td>John Doe</td>
-                                            <td>JHN123 (Opsional)</td>
-                                            <td>DOE123 (Opsional)</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">...</td>
-                                            <td>....</td>
-                                            <td>...</td>
-                                            <td>...</td>
+                                            <td>1</td>
+                                            <td>Budi Santoso</td>
+                                            <td>12210001</td>
+                                            <td>budi123</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success btn-loading">
                             <span class="btn-text">Import</span>
                             <span class="spinner-border spinner-border-sm d-none" role="status"></span>
@@ -308,42 +300,44 @@
         </div>
     </div>
 
+    {{-- Modal Export User --}}
     <div class="modal fade" id="exportUserModal" tabindex="-1" role="dialog" aria-labelledby="exportUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exportUserModalLabel">Export Data User</h5>
+                    <h5 class="modal-title font-weight-bold" id="exportUserModalLabel">Export Data User (PDF)</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.manage.user.export') }}" method="GET" enctype="multipart/form-data">
+                <form action="{{ route('admin.manage.user.export') }}" method="GET">
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="export-role-select" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="siswa">Siswa</option>
-                                <option value="guru">Guru</option>
-                                <option value="caraka">Caraka</option>
-                            </select>
-                        </div>
-                        <div class="form-group d-none" id="export-user-group">
-                            <label for="kelas">Kelas</label>
-                            <select name="kelas_id" id="export-kelas-select" class="form-control">
-                                <option value="">Pilih Kelas</option>
-                                @foreach ($kelas as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            <label for="export-role-select" class="font-weight-bold">Role <span class="text-danger">*</span></label>
+                            <select name="role" id="export-role-select" class="form-control" required style="width: 100%;">
+                                <option value="">-- Pilih Role --</option>
+                                @foreach ($roles as $r)
+                                    @if ($r->slug !== 'admin')
+                                        <option value="{{ $r->slug }}" data-has-class="{{ $r->has_class ? '1' : '0' }}">{{ $r->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
-
+                        <div class="form-group d-none" id="export-user-group">
+                            <label for="export-kelas-select" class="font-weight-bold">Kelas Akademik <span class="text-danger">*</span></label>
+                            <select name="kelas_id" id="export-kelas-select" class="form-control" style="width: 100%;">
+                                <option value="">-- Pilih Kelas --</option>
+                                @foreach ($kelas as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->prodi->name ?? '-' }})</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-success">Download</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-info"><i class="fa-regular fa-download mr-1"></i> Download PDF</button>
                     </div>
                 </form>
             </div>
@@ -364,14 +358,12 @@
                 scrollX: true,
                 ajax: {
                     url: "{{ route('admin.user.data') }}",
-                    data: function(e) {
-                        return e;
-                    }
                 },
                 order: [
-                    [0, 'desc']
+                    [1, 'asc']
                 ],
-                columns: [{
+                columns: [
+                    {
                         data: null,
                         className: 'text-center',
                         orderable: false,
@@ -387,133 +379,98 @@
                     {
                         data: 'username',
                         orderable: false,
+                        render: function(data) {
+                            return `<code>${data}</code>`;
+                        }
                     },
                     {
                         data: 'unencrypted_password',
                         orderable: false,
                     },
                     {
-                        data: 'kelas.name',
+                        data: 'kelas',
                         orderable: false,
-                        render: function(data, type, row) {
-                            return data ? data : 'N/A';
+                        render: function(data) {
+                            if (!data) return '<span class="text-muted">-</span>';
+                            let prodiName = data.prodi ? data.prodi.name : '';
+                            return `<span class="badge badge-info">${data.name}</span> <small class="text-muted d-block">${prodiName}</small>`;
                         }
                     },
                     {
-                        data: 'role',
-                        className: 'text-capitalize',
-                        orderable: true,
+                        data: 'role_data',
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row) {
+                            let name = data ? data.name : row.role;
+                            return `<span class="badge badge-primary text-capitalize">${name}</span>`;
+                        }
                     },
                     {
                         data: null,
+                        className: 'text-center',
                         orderable: false,
-                        render: function(data, type, row, meta) {
-                            const deleteUrl =
-                                `{{ route('admin.manage.user.delete', ':username') }}`;
+                        render: function(data, type, row) {
+                            const deleteUrl = `{{ route('admin.manage.user.delete', ':username') }}`;
 
                             let editBtn =
-                                `<a onclick="edit('${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                                `<button onclick="edit('${row.id}')" class="btn btn-sm btn-primary mr-1" title="Edit"><i class="fa-regular fa-edit"></i></button>`;
                             let deleteBtn =
-                                `<a href="${deleteUrl.replace(':username', row.username)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                                `<a href="${deleteUrl.replace(':username', row.username)}" class="btn btn-sm btn-danger" data-confirm-delete="true" title="Hapus"><i class="fa-regular fa-trash"></i></a>`;
                             return `${editBtn}${deleteBtn}`;
                         }
                     }
                 ],
             });
 
-            $("#add-role-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
-
-            $("#add-kelas-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
-
-            $("#import-kelas-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
-
-            $("#import-role-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
-
-            $("#export-role-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
-
-            $("#export-kelas-select").select2({
-                theme: 'bootstrap-5',
-                tags: true
-            });
+            // Handle dynamic role change for showing/hiding kelas
+            const handleRoleChange = (selectElem, groupElem) => {
+                let selectedOption = $(selectElem).find(':selected');
+                let hasClass = selectedOption.data('has-class');
+                if (hasClass == '1' || $(selectElem).val() === 'mahasiswa') {
+                    $(groupElem).removeClass('d-none');
+                } else {
+                    $(groupElem).addClass('d-none');
+                }
+            };
 
             $('#add-role-select').on('change', function() {
-                if ($(this).val() === 'siswa') {
-                    $('#add-user-group').removeClass('d-none');
-                } else {
-                    $('#add-user-group').addClass('d-none');
-                }
+                handleRoleChange(this, '#add-user-group');
             });
 
             $('#edit-role-select').on('change', function() {
-                if ($(this).val() === 'siswa') {
-                    $('#edit-user-group').removeClass('d-none');
-                } else {
-                    $('#edit-user-group').addClass('d-none');
-                }
+                handleRoleChange(this, '#edit-user-group');
             });
 
             $('#import-role-select').on('change', function() {
-                if ($(this).val() === 'siswa') {
-                    $('#import-user-group').removeClass('d-none');
-                } else {
-                    $('#import-user-group').addClass('d-none');
-                }
+                handleRoleChange(this, '#import-user-group');
             });
 
             $('#export-role-select').on('change', function() {
-                if ($(this).val() === 'siswa') {
-                    $('#export-user-group').removeClass('d-none');
-                } else {
-                    $('#export-user-group').addClass('d-none');
-                }
+                handleRoleChange(this, '#export-user-group');
             });
         });
-    </script>
-    <script>
+
         const edit = (id) => {
-            $.getJSON(`${window.location.origin}/admin/manage/users/${id}/data`, (data) => {
-                const updateUrl = `{{ route('admin.manage.user.update', ':id') }}`
+            $.getJSON(`{{ url('admin/manage/users') }}/${id}/data`, (data) => {
+                const updateUrl = `{{ route('admin.manage.user.update', ':id') }}`;
 
                 $('#editUserForm').attr('action', updateUrl.replace(':id', id));
-
                 $('#edit-fullname').val(data.fullname);
                 $('#edit-username').val(data.username);
                 $('#edit-password').val(data.unencrypted_password);
-                $('#edit-kelas-select').select2({
-                    theme: 'bootstrap-5',
-                }).val(data.kelas_id).trigger('change');
-
-                $('#edit-role-select').select2({
-                    theme: 'bootstrap-5',
-                }).val(data.role).trigger('change');
+                $('#edit-role-select').val(data.role).trigger('change');
+                $('#edit-kelas-select').val(data.kelas_id || '').trigger('change');
 
                 const myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
                 myModal.show();
-            })
+            });
         }
-    </script>
-    <script>
+
         const randomNumber = (length) => {
-            var result = '';
-            var characters = '0123456789';
-            var charactersLength = characters.length;
-            for (var i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            let result = '';
+            let characters = '0123456789';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return result;
         }

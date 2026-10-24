@@ -65,8 +65,23 @@ class User extends Authenticatable
         return $this->hasMany(Pemilu::class);
     }
 
+    public function roleData()
+    {
+        return $this->belongsTo(Role::class, 'role', 'slug');
+    }
+
+    public function getProdiAttribute()
+    {
+        return $this->kelas?->prodi;
+    }
+
     public function voting()
     {
         return $this->hasMany(Voting::class);
+    }
+
+    public function ukms()
+    {
+        return $this->belongsToMany(Ukm::class, 'ukm_user')->withTimestamps();
     }
 }
