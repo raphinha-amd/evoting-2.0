@@ -1,111 +1,184 @@
-# E-voting Project Documentation
+# E-Voting 2.0 - Sistem Pemilihan Umum Mahasiswa
+### Komisi Pemilihan Umum Mahasiswa (KPUM)
+**Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**
 
-## Description
+---
 
-E-voting adalah sebuah aplikasi berbasis web untuk pemilihan atau pemungutan suara online yang dikembangkan untuk lingkungan sekolah. Aplikasi ini bertujuan untuk memudahkan proses voting dengan menyediakan antarmuka yang aman, mudah diakses, dan dapat diandalkan. Dengan E-voting, siswa dan staf dapat memberikan suara secara online untuk berbagai kegiatan pemilihan, seperti pemilihan ketua OSIS atau perwakilan lainnya. Proyek ini dikembangkan menggunakan framework Laravel, yang menawarkan fitur MVC (Model-View-Controller) yang memungkinkan pengembangan aplikasi berbasis web yang modular dan terstruktur.
+## 📌 Tentang Proyek
 
-## Architecture
+**E-Voting 2.0** adalah platform pemungutan suara elektronik berbasis web yang dikembangkan khusus untuk memfasilitasi pelaksanaan Pemilihan Umum Mahasiswa di lingkungan **Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**. 
 
-E-voting dibangun dengan pendekatan arsitektur MVC (Model-View-Controller) yang disediakan oleh Laravel. Struktur folder disusun untuk memisahkan logika aplikasi, antarmuka pengguna, dan data, dengan tujuan meningkatkan skalabilitas dan mempermudah pemeliharaan.
+Sistem ini dikelola secara terpusat oleh **KPUM (Komisi Pemilihan Umum Mahasiswa)** sebagai penyelenggara resmi, menggantikan metode konvensional dengan sistem digital yang transparan, akuntabel, cepat, dan mudah diakses oleh seluruh civitas akademika.
 
-Berikut adalah struktur utama dari aplikasi:
+---
 
-- **app**: Menyimpan logika aplikasi seperti model dan controller.
-- **routes**: Menyimpan file routing yang mendefinisikan endpoint aplikasi.
-- **resources/views**: Berisi file blade template yang bertindak sebagai antarmuka pengguna.
-- **public**: Direktori yang berisi file yang dapat diakses langsung, seperti gambar dan file JavaScript/CSS.
+## 🚀 Fitur Utama
 
-Flow dari aplikasi mengikuti diagram berikut, di mana setiap permintaan (Request) diproses melalui beberapa tahap sebelum data akhirnya dikembalikan kepada pengguna:
+### 1. Sentralisasi Pengelolaan KPUM
+- Seluruh jalannya pemilu dikelola satu pintu oleh Administrator KPUM.
+- Kemudahan dalam pembuatan event pemilihan, monitoring jalannya voting, hingga penetapan rekapitulasi akhir.
+
+### 2. Struktur Akademik Terpadu
+- **Program Studi (Prodi)**: Manajemen Program Studi aktif di UBSI Sukabumi (misal: *Sistem Informasi S1*, *Sistem Informasi D3*, *Ilmu Komputer S1*).
+- **Kelas Terkoneksi**: Setiap kelas terhubung langsung ke Program Studi masing-masing.
+- **Data Pemilih (DPT)**: Mahasiswa terdaftar otomatis terhubung ke prodi dan kelasnya.
+
+### 3. Manajemen Role Dinamis (CRUD Roles)
+- Fleksibilitas dalam mendefinisikan role pengguna (`Admin KPUM`, `Mahasiswa`, `Dosen`, `Staf`, dsb).
+- Konfigurasi hak suara (*can vote*) dan kewajiban kelas (*has class*) pada tiap role.
+
+### 4. Tiga Cakupan Pemilihan Fleksibel (*Multi-Scope Election*)
+Sistem mendukung 3 jenis cakupan akses pemilihan:
+- **Publik**: Terbuka untuk seluruh pemilih civitas akademika yang aktif di sistem.
+- **Private Prodi**: Terbatas hanya untuk mahasiswa dari Program Studi tertentu (dapat memilih satu atau beberapa prodi sekaligus).
+- **Private UKM**: Terbatas hanya untuk mahasiswa yang terdaftar resmi sebagai anggota Unit Kegiatan Mahasiswa (UKM) penyelenggara.
+- **Password Opsional**: Pada pemilu private, password bersifat opsional. Jika dikosongkan, mahasiswa yang berhak (berdasarkan Prodi atau UKM) dapat langsung mengakses bilik suara tanpa verifikasi password tambahan.
+
+### 5. Kelola Unit Kegiatan Mahasiswa (UKM) & Anggota
+- Master data UKM kampus (kode, nama, dan deskripsi).
+- **Import Anggota via Excel**: Upload spreadsheet berformat `.xlsx`/`.xls`/`.csv` hanya dengan 1 kolom berisi NIM mahasiswa.
+- **Input Anggota Manual via AJAX**: Tambah anggota secara langsung per NIM tanpa reload halaman, menjaga modal tetap terbuka untuk input beruntun yang cepat.
+
+### 6. Bilik Suara & Surat Suara Digital
+- Tampilan surat suara digital interaktif dengan nomor urut kandidat, foto, dan tombol modal Visi & Misi.
+- Konfirmasi pemilihan ganda untuk mencegah salah klik.
+- Setiap pemilih hanya memiliki satu hak suara yang tervalidasi secara otomatis oleh sistem.
+
+### 7. Hasil Suara Real-Time & Rekapitulasi
+- Visualisasi diagram perolehan suara secara real-time (*Live Pie Chart* berbasis Chart.js).
+- Sinkronisasi partisipan / total DPT secara dinamis sesuai cakupan pemilu.
+- Fitur ekspor berita acara & rekapitulasi hasil suara resmi dalam format PDF.
+
+### 8. Import & Export Data Massal
+- Import data pengguna dan kelas dari file Excel.
+- Export data akun pemilih terdaftar ke format PDF dan Excel.
+- Zona Pengaturan (*Danger Zone*) untuk reset data secara aman bagi administrator.
+
+---
+
+## 🛠️ Tech Stack & Arsitektur
+
+- **Backend**: Laravel 10 (PHP 8.2+)
+- **Database**: MySQL 8.2 & Redis Cache
+- **Frontend**: Blade Templating, SB Admin 2, Vanilla CSS, Bootstrap 4
+- **Iconography & UI Assets**: FontAwesome Pro, SweetAlert2
+- **Data & Chart Components**: DataTables Server-Side, Chart.js
+- **Containerization**: Docker & Docker Compose
+
+### Arsitektur Alur Pemilihan:
 
 ```mermaid
-graph LR
-Request-->r(Route)-->m(Middleware)-->c(Controllers)-->mm(Model)
-c-->Request
+graph TD
+    A[Voter Login] --> B{Pilih Pemilu di Dashboard}
+    B -->|Publik| C[Bilik Suara]
+    B -->|Private Prodi| D{Cek Program Studi}
+    B -->|Private UKM| E{Cek Keanggotaan UKM}
+    D -->|Eligible & Ada Password| F[Input Password]
+    D -->|Eligible & Tanpa Password| C
+    E -->|Eligible & Ada Password| F
+    E -->|Eligible & Tanpa Password| C
+    F --> C
+    C --> G[Pilih Kandidat & Konfirmasi]
+    G --> H[Suara Tercatat & Hasil Terupdate]
 ```
 
-### Configuration & Setup
+---
 
-Untuk menjalankan aplikasi E-voting ini, beberapa konfigurasi dasar perlu disesuaikan pada file `.env`. Berikut adalah konfigurasi utama yang diperlukan:
+## 💻 Panduan Instalasi & Menjalankan
 
-- **Database**: Setelan untuk koneksi database, termasuk `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`.
-- **Filesystem**: Konfigurasi untuk penyimpanan file yang mendukung berbagai disk penyimpanan, seperti `local`, `public`, atau `s3`. Pastikan untuk mengatur `FILESYSTEM_DISK` di `.env`, misalnya:
-  ```dotenv
-  FILESYSTEM_DISK=public
-  ```
+### Metode A: Menggunakan Docker Compose (Disarankan)
 
-Aplikasi ini menggunakan beberapa library penting yang kompatibel dengan Laravel versi terbaru untuk mendukung fitur e-voting.
+Proyek ini telah dilengkapi konfigurasi Docker untuk lingkungan lokal:
 
-## Installation
+1. **Clone repository:**
+   ```bash
+   git clone https://github.com/NaraMizaru/evoting-2.0.git
+   cd evoting-2.0
+   ```
 
-Untuk menginstal dan menjalankan aplikasi ini, ikuti langkah-langkah berikut:
+2. **Siapkan konfigurasi `.env`:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Jalankan container menggunakan Makefile / Docker Compose:**
+   ```bash
+   make serve
+   # atau
+   docker compose -f docker-compose.local.yaml up -d
+   ```
+
+4. **Jalankan migrasi database dan seeder di dalam container:**
+   ```bash
+   make shell
+   # Di dalam container shell:
+   php artisan key:generate
+   php artisan migrate:fresh --seed
+   exit
+   ```
+
+5. **Akses aplikasi:**
+   Buka browser dan kunjungi `http://localhost:8000`.
+
+---
+
+### Metode B: Menggunakan Web Server Lokal (Native PHP & Composer)
+
+1. Pastikan Anda telah memasang **PHP >= 8.2**, **Composer**, dan **MySQL**.
+2. Setup environment dan dependensi:
+   ```bash
+   composer install
+   cp .env.example .env
+   php artisan key:generate
+   ```
+3. Sesuaikan kredensial koneksi database pada file `.env`.
+4. Jalankan database migration & seeder:
+   ```bash
+   php artisan migrate:fresh --seed
+   php artisan storage:link
+   ```
+5. Jalankan server lokal:
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 🔑 Akun Default Pengujian
+
+Setelah menjalankan seeder (`DatabaseSeeder`), akun default berikut dapat digunakan untuk login:
+
+| Role | Username / NIM | Password | Keterangan |
+| :--- | :--- | :--- | :--- |
+| **Admin KPUM** | `admin` | `admin` | Akses penuh dashboard administrasi KPUM |
+
+*Catatan: Akun mahasiswa pemilih dapat ditambahkan melalui menu **Kelola Pengguna** atau diimport melalui file Excel.*
+
+---
+
+## 🧪 Menjalankan Automated Test
+
+Sistem ini dilengkapi dengan Automated Feature & Unit Test (PHPUnit):
 
 ```bash
-git clone https://github.com/NaraMizaru/evoting-2.0.git
-cd evoting-2.0
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate:fresh --seed
-php artisan serve
+docker compose -f docker-compose.local.yaml -p local-evoting exec -T web php artisan test
 ```
 
-## Maintenance & Troubleshooting
+---
 
-### Maintenance
+## 👥 Tim Penyelenggara & Pengembang
 
-Untuk menjaga aplikasi tetap berjalan dengan baik, berikut adalah beberapa tindakan pemeliharaan yang perlu dilakukan secara rutin:
+Halaman Hak Cipta & Tim Teknis dapat diakses melalui menu footer sistem atau langsung pada route `/copyright`.
 
-- **Backup Database**: Buat backup database secara berkala untuk menghindari kehilangan data. Anda dapat menggunakan fitur backup otomatis atau membuat skrip backup yang dijalankan melalui cron job.
-- **Log Monitoring**: Periksa file log aplikasi yang terletak di `storage/logs/laravel.log` secara berkala untuk mengidentifikasi error atau peringatan yang memerlukan tindakan.
-- **Update Dependencies**: Pastikan untuk selalu menggunakan versi terbaru dari Laravel dan library lain yang digunakan, terutama ketika ada pembaruan keamanan.
-- **Optimize Cache**: Jalankan `php artisan optimize` dan `php artisan config:cache` untuk mengoptimalkan kinerja cache dan konfigurasi aplikasi.
+- **Ketua Divisi Teknis Penyelenggara**:
+  - **Raffi Ahmad** — [*@_rapinha*](https://www.instagram.com/_rapinha/) | [GitHub](https://github.com/raphinha-amd) | [Website](https://raphinha-amd.github.io/)
+- **Bantuan Teknis (Tim Pengembang Sistem)**:
+  - **Muhamad Hilal** — [*@md.hilallsluvyaa*](https://www.instagram.com/md.hilallsluvyaa) | [GitHub](https://github.com/NaraMizaru) | [Website](https://naramizaru.github.io)
+  - **Farhan Dika Alsani** — [*@farahanaya_*](https://www.instagram.com/farahanaya_) | [GitHub](https://github.com/uiahan) | [Website](https://uiahan.github.io/kkanva-portofolio)
 
-### Troubleshooting
+---
 
-Beberapa masalah umum dan solusi yang mungkin membantu:
+## 📄 Hak Cipta & Lisensi
 
-1. **500 Internal Server Error**:
-
-   - Periksa file `.env` untuk memastikan konfigurasi, terutama pada bagian `APP_KEY`, `DB_CONNECTION`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`, sudah benar.
-   - Jalankan `php artisan config:cache` untuk memastikan cache konfigurasi diperbarui setelah melakukan perubahan di `.env`.
-
-2. **Error saat Menjalankan Composer Install**:
-
-   - Jika muncul pesan error terkait dependensi, coba jalankan `composer update` untuk memperbarui versi library yang kompatibel.
-   - Pastikan versi PHP yang terpasang kompatibel dengan versi Laravel dan library yang digunakan.
-
-3. **Cache Tidak Diperbarui**:
-
-   - Untuk memastikan perubahan dalam aplikasi diterapkan, jalankan perintah berikut untuk membersihkan dan mengoptimalkan cache:
-     ```bash
-     php artisan cache:clear
-     php artisan view:clear
-     php artisan route:clear
-     php artisan config:clear
-     php artisan optimize
-     ```
-
-4. **Migrasi Database Gagal**:
-
-   - Jika perintah `php artisan migrate` mengalami error, periksa apakah database telah diinisialisasi dan kredensial pada file `.env` sudah benar.
-   - Jika tabel sudah ada dan Anda mencoba menambahkan kolom baru, gunakan `php artisan migrate:fresh` untuk memulai migrasi dari awal (peringatan: ini akan menghapus data lama).
-
-5. **Error di Saat Menjalankan Storage atau Filesystem**:
-   - Pastikan disk penyimpanan yang dikonfigurasi pada `FILESYSTEM_DISK` di `.env` sudah benar. Jika menggunakan `public`, jalankan `php artisan storage:link` untuk membuat symbolic link ke `public/storage`.
-   - Periksa konfigurasi `FILESYSTEM_DISK` jika menggunakan layanan eksternal seperti S3.
-
-Dengan panduan di atas, Anda diharapkan dapat menjaga aplikasi E-voting tetap berjalan optimal dan mengatasi masalah umum yang mungkin muncul.
-
-## References
-
-Berikut adalah sumber-sumber referensi yang berguna untuk pengembangan dan pemeliharaan aplikasi E-voting:
-
-- [Laravel Documentation](https://laravel.com/docs): Dokumentasi resmi Laravel untuk referensi terkait berbagai fitur, konfigurasi, dan panduan penggunaan.
-- [Mermaid Documentation](https://mermaid-js.github.io/mermaid): Dokumentasi untuk Mermaid, alat diagram yang digunakan untuk membuat diagram arsitektur.
-- [PHP Documentation](https://www.php.net/docs.php): Dokumentasi resmi PHP untuk informasi lebih lanjut terkait penggunaan dan fungsi PHP.
-- [Composer Documentation](https://getcomposer.org/doc/): Panduan penggunaan Composer, manajer dependensi PHP, yang digunakan untuk mengelola library di Laravel.
-- [DigitalOcean: How to Deploy Laravel Applications](https://www.digitalocean.com/community/tutorials): Kumpulan tutorial untuk meng-host aplikasi Laravel dan panduan konfigurasi server.
-- [GitHub Laravel Filesystem Documentation](https://github.com/laravel/docs/blob/10.x/filesystem.md): Dokumentasi terkait konfigurasi dan penggunaan Filesystem di Laravel, termasuk cara integrasi dengan layanan seperti S3.
-- [SB Admin 2 for Laravel](https://github.com/aleckrh/laravel-sb-admin-2): Repository GitHub untuk menggunakan template SB Admin 2 dalam proyek Laravel, yang menyediakan desain responsif dan fungsionalitas yang dibutuhkan untuk antarmuka pengguna aplikasi.
-
-Referensi-referensi ini dapat membantu dalam mengelola dan memperdalam pemahaman mengenai aplikasi E-voting dan teknologi pendukungnya.
+Hak Cipta &copy; 2026 **KPUM Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**.  
+Seluruh hak cipta dilindungi undang-undang.
