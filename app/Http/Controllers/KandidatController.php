@@ -47,7 +47,7 @@ class KandidatController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'vision_mission' => 'required|string',
-            'image' => 'required|file|image|mimes:png,jpg,jpeg|max:2048'
+            'image' => 'required|file|image|mimes:png,jpg,jpeg|max:10240'
         ]);
 
         if ($validator->fails()) {
@@ -85,7 +85,7 @@ class KandidatController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'vision_mission' => 'required|string',
-            'image' => 'nullable|file|image|mimes:png,jpg,jpeg|max:2048'
+            'image' => 'nullable|file|image|mimes:png,jpg,jpeg|max:10240'
         ]);
 
         if ($validator->fails()) {
