@@ -20,7 +20,7 @@
 
 <body class="min-vh-100 d-flex justify-content-center align-items-center bg-primary">
     <div id="preloader">
-        <img src="{{ asset('assets/img/e-vote-logo-1.png') }}" alt="Logo Preloader">
+        <img src="{{ asset('assets/img/logo_kpum.png') }}" alt="Logo Preloader">
     </div>
     @yield('content')
 

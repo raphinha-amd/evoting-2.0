@@ -3,7 +3,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fa-regular fa-fw fa-envelope-open-text"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">E-Voting <sup>KPUM BSI</sup></div>
+        <div class="sidebar-brand-text mx-3">RuangSuara <sup>KPUM BSI</sup></div>
     </a>
 
     <hr class="sidebar-divider my-0">

@@ -1,4 +1,4 @@
-# E-Voting 2.0 - Sistem Pemilihan Umum Mahasiswa
+# RuangSuara - Sistem Pemilihan Umum Mahasiswa
 ### Komisi Pemilihan Umum Mahasiswa (KPUM)
 **Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**
 
@@ -6,7 +6,7 @@
 
 ## 📌 Tentang Proyek
 
-**E-Voting 2.0** adalah platform pemungutan suara elektronik berbasis web yang dikembangkan khusus untuk memfasilitasi pelaksanaan Pemilihan Umum Mahasiswa di lingkungan **Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**. 
+**RuangSuara** adalah platform pemungutan suara elektronik berbasis web yang dikembangkan khusus untuk memfasilitasi pelaksanaan Pemilihan Umum Mahasiswa di lingkungan **Universitas Bina Sarana Informatika (UBSI) Kampus Kota Sukabumi**. 
 
 Sistem ini dikelola secara terpusat oleh **KPUM (Komisi Pemilihan Umum Mahasiswa)** sebagai penyelenggara resmi, menggantikan metode konvensional dengan sistem digital yang transparan, akuntabel, cepat, dan mudah diakses oleh seluruh civitas akademika.
 

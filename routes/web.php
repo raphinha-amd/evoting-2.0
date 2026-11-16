@@ -149,20 +149,20 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function () {
 Route::get('/copyright', function () {
     $data['member'] = [
         [
+            'name' => 'narashaaaaa',
+            'role' => 'Bantuan Teknis (DevOps)',
+            'img' => null,
+            'instagram' => 'https://www.instagram.com/md.hilallsluvyaa',
+            'website' => 'https://naramizaru.github.io',
+            'github' => 'https://github.com/NaraMizaru',
+        ],
+        [
             'name' => 'Raffi Ahmad',
             'role' => 'Ketua Divisi Teknis Penyelenggara',
             'img' => 'assets/img/member/raffi.jpg',
             'instagram' => 'https://www.instagram.com/_rapinha/',
             'website' => 'https://raphinha-amd.github.io/',
             'github' => 'https://github.com/raphinha-amd',
-        ],
-        [
-            'name' => 'Muhamad Hilal',
-            'role' => 'Bantuan Teknis (Pengembang Sistem)',
-            'img' => 'assets/img/member/hilal.jpg',
-            'instagram' => 'https://www.instagram.com/md.hilallsluvyaa',
-            'website' => 'https://naramizaru.github.io',
-            'github' => 'https://github.com/NaraMizaru',
         ],
         [
             'name' => 'Farhan Dika Alsani',

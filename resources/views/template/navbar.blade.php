@@ -3,7 +3,7 @@
         <i class="fa-regular fa-bars"></i>
     </button>
 
-    <h5 class="text-primary font-weight-bold d-none d-md-block mb-0"><i class="fa-regular fa-check-to-slot mr-2"></i>E-Voting KPUM | Universitas BSI Kampus Kota Sukabumi</h5>
+    <h5 class="text-primary font-weight-bold d-none d-md-block mb-0"><i class="fa-regular fa-check-to-slot mr-2"></i>RuangSuara KPUM | Universitas BSI Kampus Kota Sukabumi</h5>
 
     <ul class="navbar-nav ml-auto">
         @if (auth()->user()->role == 'admin')

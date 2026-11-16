@@ -52,7 +52,7 @@
             <div class="col-12">
                 <div class="alert alert-info border-left-info shadow-sm" role="alert">
                     <h5 class="alert-heading font-weight-bold mb-1"><i class="fa-regular fa-building-columns mr-2"></i>Komisi Pemilihan Umum Mahasiswa (KPUM)</h5>
-                    Selamat datang di Dasbor E-Voting <strong>Universitas Bina Sarana Informatika Kampus Kota Sukabumi</strong>. Sistem ini dikelola secara terpusat oleh KPUM untuk memfasilitasi pemilihan ketua BEM dan Himpunan Mahasiswa Program Studi (HIMASI, dll.).
+                    Selamat datang di Dasbor RuangSuara <strong>Universitas Bina Sarana Informatika Kampus Kota Sukabumi</strong>. Sistem ini dikelola secara terpusat oleh KPUM untuk memfasilitasi pemilihan ketua BEM dan Himpunan Mahasiswa Program Studi (HIMASI, dll.).
                 </div>
             </div>
 

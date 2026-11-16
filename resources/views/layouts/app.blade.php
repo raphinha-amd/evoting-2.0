@@ -20,7 +20,7 @@
 
 <body id="page-top">
     <div id="preloader">
-        <img src="{{ asset('assets/img/e-vote-logo-1.png') }}" alt="Logo Preloader">
+        <img src="{{ asset('assets/img/logo_kpum.png') }}" alt="Logo Preloader">
     </div>
     <div id="wrapper">
         @include('template.sidebar')

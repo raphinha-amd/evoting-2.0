@@ -161,11 +161,11 @@ class UserController extends Controller
         if ($hasClass && $request->kelas_id) {
             $kelas = Kelas::with('prodi')->where('id', $request->kelas_id)->first();
             $users = User::with(['kelas.prodi', 'roleData'])->where('kelas_id', $request->kelas_id)->get();
-            $fileName = 'Data User Evoting ' . ($kelas ? $kelas->name : 'Kelas') . '.pdf';
+            $fileName = 'Data User RuangSuara ' . ($kelas ? $kelas->name : 'Kelas') . '.pdf';
         } else {
             $users = User::with('roleData')->where('role', $request->role)->get();
             $roleName = $role ? $role->name : ucfirst($request->role);
-            $fileName = 'Data User Evoting ' . $roleName . '.pdf';
+            $fileName = 'Data User RuangSuara ' . $roleName . '.pdf';
         }
 
         $pdf = Pdf::loadView('export.export-users', compact('users', 'kelas'));
